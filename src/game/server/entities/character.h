@@ -75,6 +75,7 @@ public:
 	bool GiveWeapon(int Weapon, int Ammo);
 
 	void SetEmote(int Emote, int Tick);
+	void SetTurret();
 
 	int MaxHealthPerRound;
 
@@ -84,7 +85,7 @@ public:
 	int NeededFaketuning() { return m_NeededFaketuning;}
 	bool IsAlive() const { return m_Alive; }
 	class CPlayer *GetPlayer() { return m_pPlayer; }
-
+	CGameWorld* World() { return GameServer()->m_World; }
 private:
 	// player controlling this character
 	class CPlayer *m_pPlayer;
@@ -182,6 +183,9 @@ public:
 	int ITickSecond;
 	int m_mAmmo;
 	bool m_SuperJump;
+
+
+
 	int m_TuneZone;
 	int m_TuneZoneOld;
 	int m_LastMove;

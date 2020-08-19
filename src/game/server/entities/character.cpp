@@ -47,15 +47,15 @@ bool CCharacter::Spawn(CPlayer *pPlayer, vec2 Pos)
 
 	m_Core.Reset();
 	m_Core.m_Id = GetPlayer()->GetCID();
-	m_Core.Init(&GameServer()->m_World.m_Core, GameServer()->Collision(), &((CGameControllerDDRace*)GameServer()->m_pController)->m_TeleOuts);
+	m_Core.Init(&World()->m_Core, GameServer()->Collision(), &((CGameControllerDDRace*)GameServer()->m_pController)->m_TeleOuts);
 	m_Core.m_Pos = m_Pos;
-	GameServer()->m_World.m_Core.m_apCharacters[m_pPlayer->GetCID()] = &m_Core;
+	World()->m_Core.m_apCharacters[m_pPlayer->GetCID()] = &m_Core;
 	
 	m_ReckoningTick = 0;
 	mem_zero(&m_SendCore, sizeof(m_SendCore));
 	mem_zero(&m_ReckoningCore, sizeof(m_ReckoningCore));
 
-	GameServer()->m_World.InsertEntity(this);
+	World()->InsertEntity(this);
 	m_Alive = true;
 
 	m_LastRefillJumps = m_HittingDoor = m_iVisible = m_TypeHealthCh = false;
@@ -95,7 +95,7 @@ void CCharacter::Destroy()
 		Server()->SnapFreeID(m_InvisID);
 		m_InvisID = -1;
 	}
-	GameServer()->m_World.m_Core.m_apCharacters[m_pPlayer->GetCID()] = 0;
+	World()->m_Core.m_apCharacters[m_pPlayer->GetCID()] = 0;
 	m_Alive = false;
 }
 
@@ -338,7 +338,7 @@ void CCharacter::FireWeapon()
 					pClosest = (CTurret *)pClosest->TypeNext();
 				}
 				
-				int Num = GameServer()->m_World.FindEntities(ProjStartPos, m_ProximityRadius*(m_pPlayer->m_RangeShop?2.00f:0.76f), (CEntity**)apEnts, MAX_CLIENTS, CGameWorld::ENTTYPE_CHARACTER);
+				int Num = World()->FindEntities(ProjStartPos, m_ProximityRadius*(m_pPlayer->m_RangeShop?2.00f:0.76f), (CEntity**)apEnts, MAX_CLIENTS, CGameWorld::ENTTYPE_CHARACTER);
 				for (int i = 0; i < Num; ++i)
 				{
 					CCharacter *pTarget = apEnts[i];
@@ -371,7 +371,7 @@ void CCharacter::FireWeapon()
 						IhammerRelTick = 30 * Server()->TickSpeed();
 				}
 
-				int Num = GameServer()->m_World.FindEntities(ProjStartPos, m_ProximityRadius*0.5f, (CEntity**)apEnts, MAX_CLIENTS, CGameWorld::ENTTYPE_CHARACTER);
+				int Num = World()->FindEntities(ProjStartPos, m_ProximityRadius*0.5f, (CEntity**)apEnts, MAX_CLIENTS, CGameWorld::ENTTYPE_CHARACTER);
 				for (int i = 0; i < Num; ++i)
 				{
 					CCharacter *pTarget = apEnts[i];
@@ -757,7 +757,6 @@ void CCharacter::TickDefered()
 	}
 
 	int Events = m_Core.m_TriggeredEvents;
-	//int Mask = CmaskAllExceptOne(m_pPlayer->GetCID());
 
 	if(Events&COREEVENT_GROUND_JUMP) GameServer()->CreateSound(m_Pos, SOUND_PLAYER_JUMP);
 
@@ -879,8 +878,8 @@ void CCharacter::Die(int Killer, int Weapon)
 	m_pPlayer->m_DieTick = Server()->Tick();
 	
 	m_Alive = false;
-	GameServer()->m_World.RemoveEntity(this);
-	GameServer()->m_World.m_Core.m_apCharacters[m_pPlayer->GetCID()] = 0;
+	World()->RemoveEntity(this);
+	World()->m_Core.m_apCharacters[m_pPlayer->GetCID()] = 0;
 	GameServer()->CreateDeath(m_Pos, m_pPlayer->GetCID());
 }
 
@@ -1031,10 +1030,10 @@ void CCharacter::Snap(int SnappingClient)
 
 		vec2 At;
 		vec2 Pushing;
-		if(GameServer()->m_World.IntersectCharacter(vec2(cos(a+0.4 + M_PI * 4)*(80.0)+ m_Pos.x, sin(a+0.4 + M_PI * 4)*(80.0)+ m_Pos.y), vec2(cos(a-0.4 + M_PI * 4)*(80.0)+ m_Pos.x, sin(a-0.4 + M_PI * 4)*(80.0)+ m_Pos.y), 6.0f, At, NULL))
+		if(World()->IntersectCharacter(vec2(cos(a+0.4 + M_PI * 4)*(80.0)+ m_Pos.x, sin(a+0.4 + M_PI * 4)*(80.0)+ m_Pos.y), vec2(cos(a-0.4 + M_PI * 4)*(80.0)+ m_Pos.x, sin(a-0.4 + M_PI * 4)*(80.0)+ m_Pos.y), 6.0f, At, NULL))
 		{
 			CCharacter *apEnts[MAX_CLIENTS];
-			int Num = GameServer()->m_World.FindCharacters1(vec2(cos(a+0.4 + M_PI * 4)*(80.0)+ m_Pos.x, sin(a+0.4 + M_PI * 4)*(80.0)+ m_Pos.y), vec2(cos(a-0.4 + M_PI * 4)*(80.0)+ m_Pos.x, sin(a-0.4 + M_PI * 4)*(80.0)+ m_Pos.y), 2.5f, apEnts, MAX_CLIENTS);
+			int Num = World()->FindCharacters1(vec2(cos(a+0.4 + M_PI * 4)*(80.0)+ m_Pos.x, sin(a+0.4 + M_PI * 4)*(80.0)+ m_Pos.y), vec2(cos(a-0.4 + M_PI * 4)*(80.0)+ m_Pos.x, sin(a-0.4 + M_PI * 4)*(80.0)+ m_Pos.y), 2.5f, apEnts, MAX_CLIENTS);
 			for(int i = 0; i < Num; i++)
 			{
 				if(apEnts[i]->GetPlayer()->GetTeam() == TEAM_RED)
@@ -1146,7 +1145,7 @@ void CCharacter::Snap(int SnappingClient)
 		return;
 	
 	// write down the m_Core
-	if(!m_ReckoningTick || GameServer()->m_World.m_Paused)
+	if(!m_ReckoningTick || World()->m_Paused)
 	{
 		// no dead reckoning when paused because the client doesn't know
 		// how far to perform the reckoning
@@ -1622,6 +1621,90 @@ void CCharacter::SendZoneMsgs()
 			GameServer()->SendChatTarget(m_pPlayer->GetCID(), aBuf);
 		}
 		GameServer()->SendChatTarget(m_pPlayer->GetCID(), cur);
+	}
+}
+
+void CCharacter::SetTurret()
+{
+	if (m_TurretActive[m_Core.m_ActiveWeapon])
+		return;
+
+	switch (m_Core.m_ActiveWeapon)
+	{
+
+	case WEAPON_HAMMER:
+		new CTurret(&World(), m_Pos, ClientID, WEAPON_HAMMER);
+		break;
+
+	case WEAPON_GUN:
+		new CTurret(&World(), m_Pos, ClientID, WEAPON_GUN);
+		break;
+
+	case WEAPON_SHOTGUN:
+		new CTurret(&World(), m_Pos, ClientID, WEAPON_SHOTGUN);
+		break;
+
+	case WEAPON_RIFLE:
+		if (m_TurRifle != vec2(0, 0))
+		{
+			if (GameServer()->Collision()->IntersectLine(m_TurRifle, m_Pos, &m_Pos, 0, false))
+			{
+				SendChatTarget(ClientID, "Wall can't be placed between your points.");
+				m_TurRifle = vec2(0, 0);
+				return;
+			}
+
+			if (distance(m_TurRifle, m_Pos) < 50)
+			{
+				SendChatTarget(ClientID, "This distance is too short :(");
+				m_TurRifle = vec2(0, 0);
+				return;
+			}
+
+			vec2 SecondSpot = m_Pos;
+			if (length(SecondSpot - m_TurRifle) > 360)
+			{
+				vec2 Dir = normalize(m_Pos - m_TurRifle);
+				SecondSpot = m_TurRifle + Dir * 360;
+			}
+
+			new CTurret(&World(), m_TurRifle, ClientID, WEAPON_RIFLE, m_TurRifle, SecondSpot);
+			m_TurRifle = vec2(0, 0);
+		}
+		else
+			m_TurRifle = m_Pos;
+		break;
+
+	case WEAPON_GRENADE:
+		if (m_TurGrenade != vec2(0, 0))
+		{
+			if (Collision()->IntersectLine(m_TurGrenade, m_Pos, &m_Pos, 0, false))
+			{
+				SendChatTarget(ClientID, "Wall can't be placed between your points.");
+				m_TurGrenade = vec2(0, 0);
+				return;
+			}
+
+			if (distance(m_TurGrenade, m_Pos) < 50)
+			{
+				SendChatTarget(ClientID, "This distance is too small! :(");
+				m_TurGrenade = vec2(0, 0);
+				return;
+			}
+
+			vec2 SecondSpot = m_Pos;
+			if (length(SecondSpot - m_TurGrenade) > 360)
+			{
+				vec2 Dir = normalize(m_Pos - m_TurGrenade);
+				SecondSpot = m_TurGrenade + Dir * 360;
+			}
+
+			new CTurret(&World(), m_TurGrenade, ClientID, WEAPON_GRENADE, m_TurGrenade, SecondSpot);
+			m_TurGrenade = vec2(0, 0);
+		}
+		else
+			m_TurGrenade = m_Pos;
+		break;
 	}
 }
 

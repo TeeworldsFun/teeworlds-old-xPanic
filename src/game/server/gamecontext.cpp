@@ -1244,12 +1244,20 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 				switch (pMsg->m_Emoticon)
 				{
 					case EMOTICON_EXCLAMATION:
+						pChr->SetEmoteType(EMOTE_SURPRISE);
+						break;
 					case EMOTICON_QUESTION:
+						pChr->SetEmoteType(EMOTE_SURPRISE);
+						break;
 					case EMOTICON_WTF:
-							pChr->SetEmoteType(EMOTE_SURPRISE);
-							break;
+						pChr->SetEmoteType(EMOTE_SURPRISE);
+						break;
 					case EMOTICON_DOTDOT:
+						pChr->SetEmoteType(EMOTE_BLINK);
+						break
 					case EMOTICON_DROP:
+						pChr->SetEmoteType(EMOTE_BLINK);
+						break
 					case EMOTICON_ZZZ:
 						pChr->SetEmoteType(EMOTE_BLINK);
 						break;
@@ -1260,96 +1268,26 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 						pChr->SetEmoteType(EMOTE_HAPPY);
 						break;
 					case EMOTICON_MUSIC:
-							pChr->SetEmoteType(EMOTE_HAPPY);
-							pChr->SwitchShield();
-							break;
+						pChr->SetEmoteType(EMOTE_HAPPY);
+						pChr->SwitchShield();
+						break;
 					case EMOTICON_OOP:
+						pChr->SetEmoteType(EMOTE_PAIN);
+						break;
 					case EMOTICON_SORRY:
+						pChr->SetEmoteType(EMOTE_PAIN);
 						break;
 					case EMOTICON_SUSHI:
-							pChr->SetEmoteType(EMOTE_PAIN);
-							break;
+						pChr->SetEmoteType(EMOTE_PAIN);
+						break;
 					case EMOTICON_DEVILTEE:
 					case EMOTICON_SPLATTEE:
 					case EMOTICON_ZOMG:
 							pChr->SetEmoteType(EMOTE_ANGRY);
 							break;
 					case EMOTICON_GHOST:
-					{
-						if (pChr->m_Core.m_ActiveWeapon == WEAPON_GUN && !pChr->m_TurretActive[0])
-						{
-							new CTurret(&m_World, pChr->m_Pos, ClientID, WEAPON_GUN, vec2(0,0), vec2(0,0));
-							pChr->m_TurretActive[0] = true;
-						}
-						if (pChr->m_Core.m_ActiveWeapon == WEAPON_SHOTGUN && !pChr->m_TurretActive[1])
-						{
-							new CTurret(&m_World, pChr->m_Pos, ClientID, WEAPON_SHOTGUN, vec2(0,0), vec2(0,0));
-							pChr->m_TurretActive[1] = true;
-						}
-						if (pChr->m_Core.m_ActiveWeapon == WEAPON_RIFLE && !pChr->m_TurretActive[2])
-						{
-							if (pChr->m_TurRifle != vec2(0, 0))
-							{
-								if (Collision()->IntersectLine(pChr->m_TurRifle, pChr->m_Pos, &pChr->m_Pos, 0,false))
-								{
-									SendChatTarget(ClientID, "Wall can't be placed between your points.");
-									pChr->m_TurRifle = vec2(0, 0);
-									return;
-								}
-								if (distance(pChr->m_TurRifle, pChr->m_Pos) < 50)
-								{
-									SendChatTarget(ClientID, "This distance is too short :(");
-									pChr->m_TurRifle = vec2(0, 0);
-									return;
-								}
-								vec2 SecondSpot = pChr->m_Pos;
-								if(length(SecondSpot - pChr->m_TurRifle) > 360)
-								{
-									vec2 Dir = normalize(pChr->m_Pos - pChr->m_TurRifle);
-									SecondSpot = pChr->m_TurRifle+Dir*360;
-								}
-								new CTurret(&m_World, pChr->m_TurRifle, ClientID, WEAPON_RIFLE, pChr->m_TurRifle, SecondSpot);
-								pChr->m_TurRifle = vec2(0,0);
-								pChr->m_TurretActive[2] = true;
-							}
-							else
-								pChr->m_TurRifle = pChr->m_Pos;
-						}
-						if (pChr->m_Core.m_ActiveWeapon == WEAPON_HAMMER && !pChr->m_TurretActive[3])
-						{
-							new CTurret(&m_World, pChr->m_Pos, ClientID, WEAPON_HAMMER, vec2(0,0), vec2(0,0));
-							pChr->m_TurretActive[3] = true;
-						}
-						if (pChr->m_Core.m_ActiveWeapon == WEAPON_GRENADE && !pChr->m_TurretActive[4])
-						{
-							if (pChr->m_TurGrenade != vec2(0, 0))
-							{
-								if (Collision()->IntersectLine(pChr->m_TurGrenade, pChr->m_Pos, &pChr->m_Pos, 0,false))
-								{
-									SendChatTarget(ClientID, "Wall can't be placed between your points.");
-									pChr->m_TurGrenade = vec2(0, 0);
-									return;
-								}
-								if (distance(pChr->m_TurGrenade, pChr->m_Pos) < 50)
-								{
-									SendChatTarget(ClientID, "This distance is too small! :(");
-									pChr->m_TurGrenade = vec2(0, 0);
-									return;
-								}
-								vec2 SecondSpot = pChr->m_Pos;
-								if(length(SecondSpot - pChr->m_TurGrenade) > 360)
-								{
-									vec2 Dir = normalize(pChr->m_Pos - pChr->m_TurGrenade);
-									SecondSpot = pChr->m_TurGrenade+Dir*360;
-								}
-								new CTurret(&m_World, pChr->m_TurGrenade, ClientID, WEAPON_GRENADE, pChr->m_TurGrenade, SecondSpot);
-								pChr->m_TurGrenade = vec2(0,0);
-								pChr->m_TurretActive[4] = true;
-							}
-							else
-								pChr->m_TurGrenade = pChr->m_Pos;
-						}
-					} break;
+						pChr->SetTurret();
+						break;
 					default:
 						pChr->SetEmoteType(EMOTE_NORMAL);
 						break;

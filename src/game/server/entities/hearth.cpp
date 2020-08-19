@@ -19,12 +19,12 @@ CLifeHearth::CLifeHearth(CGameWorld *pGameWorld, vec2 Pos, int Owner)
 void CLifeHearth::Reset() 
 {	
 	GameServer()->m_World.DestroyEntity(this);
+	Destroy();
 }
 
 void CLifeHearth::Tick()
 {
-	if (!GameServer()->m_apPlayers[m_Owner] || GameServer()->m_apPlayers[m_Owner]->GetTeam() == TEAM_BLUE
-			|| GameServer()->m_apPlayers[m_Owner]->GetTeam() == TEAM_SPECTATORS) 
+	if (!GameServer()->m_apPlayers[m_Owner] || GameServer()->m_apPlayers[m_Owner]->GetTeam() != TEAM_RED) 
 		return Reset();
 
 	if (!GameServer()->GetPlayerChar(m_Owner))

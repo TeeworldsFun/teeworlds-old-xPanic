@@ -22,7 +22,8 @@ CTurret::CTurret(CGameWorld *pGameWorld, vec2 Pos, int Owner, int Type, vec2 Pos
 
 	m_ReloadTick = 0;
 	m_RegenTime = 3000 * Server()->TickSpeed() / (1000 + GameServer()->m_apPlayers[m_Owner]->m_AccData.m_TurretShotgun * 27);
-	m_Ammo = 1+GameServer()->m_apPlayers[m_Owner]->m_AccData.m_TurretAmmo;	
+	m_Ammo = 1+GameServer()->m_apPlayers[m_Owner]->m_AccData.m_TurretAmmo;
+	GameServer()->GetPlayerChar(m_Owner)->m_TurretActive[m_Type] = true;
    
 	for (unsigned i = 0; i < sizeof(m_inIDs) / sizeof(int); i ++)
         m_inIDs[i] = Server()->SnapNewID();
@@ -37,38 +38,44 @@ void CTurret::Reset()
 {	
 	GameServer()->m_World.DestroyEntity(this);
 	for (unsigned i = 0; i < sizeof(m_inIDs) / sizeof(int); i ++)
-	{
-		if(m_inIDs[i] >= 0){
+		if(m_inIDs[i] >= 0)
+		{
 			Server()->SnapFreeID(m_inIDs[i]);
 			m_inIDs[i] = -1;
 		}
-	}
-	if(m_IDS >= 0){
+
+	if(m_IDS >= 0)
+	{
 		Server()->SnapFreeID(m_IDS);
 		m_IDS = -1;
 	}
-	if(m_IDC >= 0){
+
+	if(m_IDC >= 0)
+	{
 		Server()->SnapFreeID(m_IDC);
 		m_IDC = -1;
 	}
-	if(m_IDG >= 0){
+
+	if(m_IDG >= 0)
+	{
 		Server()->SnapFreeID(m_IDG);
 		m_IDG = -1;
 	}
 
 	if (GameServer()->GetPlayerChar(m_Owner))
-	{
 		if (m_Type == WEAPON_GUN)
-			GameServer()->GetPlayerChar(m_Owner)->m_TurretActive[0] = false;
+			GameServer()->GetPlayerChar(m_Owner)->m_TurretActive[WEAPON_GUN] = false;
 		else if (m_Type == WEAPON_SHOTGUN)
-			GameServer()->GetPlayerChar(m_Owner)->m_TurretActive[1] = false;
-	}
+			GameServer()->GetPlayerChar(m_Owner)->m_TurretActive[WEAPON_SHOTGUN] = false;
+
+	Destroy();
 }
 
 void CTurret::Tick() 
 {
-	if (!GameServer()->GetPlayerChar(m_Owner) || !GameServer()->GetPlayerChar(m_Owner)->IsAlive() || GameServer()->m_apPlayers[m_Owner]->GetTeam() == TEAM_RED
-			|| GameServer()->m_apPlayers[m_Owner]->GetTeam() == TEAM_SPECTATORS) 
+	if (!GameServer()->GetPlayerChar(m_Owner) ||
+		!GameServer()->GetPlayerChar(m_Owner)->IsAlive() ||
+		GameServer()->m_apPlayers[m_Owner]->GetTeam() != TEAM_BLUE) 
 		return Reset();	
 	
 	m_RegenTime--;
@@ -80,13 +87,15 @@ void CTurret::Tick()
 
 	if (m_Type == WEAPON_GRENADE)
 	{
-		if(distance(m_Pos2L, m_Pos) < 5) BackSpeed = true;
-		if(BackSpeed)
+		if(distance(m_Pos2L, m_Pos) < 5)
 		{
+			BackSpeed = true;
 			SavePosion = normalize(m_Pos1L - m_Pos);
-			if(distance(m_Pos1L, m_Pos) < 5) BackSpeed = false;
+			if(distance(m_Pos1L, m_Pos) < 5)
+				BackSpeed = false;
 		}
-		else SavePosion = normalize(m_Pos2L - m_Pos);
+		else
+			SavePosion = normalize(m_Pos2L - m_Pos);
 		
 		m_Pos += SavePosion*2;
 		if (m_ReloadTick)
@@ -101,6 +110,7 @@ void CTurret::Tick()
 		m_ReloadTick = 3000 * Server()->TickSpeed() / (1000 + GameServer()->m_apPlayers[m_Owner]->m_AccData.m_TurretSpeed * 40), m_Ammo--;
 		return;
 	}
+
 	Fire();
 }
 
@@ -143,14 +153,16 @@ void CTurret::Fire()
 	if (!m_Ammo)
 		return;
 
-	switch(m_Type){
+	switch(m_Type)
+	{
 		case WEAPON_GUN:
 		{
 			ExperienceTAdd();
 			new CProjectile(GameWorld(), WEAPON_GUN, m_Owner, ProjStartPos, Direction, (int)(Server()->TickSpeed()*GameServer()->Tuning()->m_GunLifetime), 2+GameServer()->m_apPlayers[m_Owner]->m_AccData.m_TurretDmg/5, 0, 22, -1, WEAPON_GUN);
 			GameServer()->CreateSound(m_Pos, SOUND_GUN_FIRE);
 			m_ReloadTick = 3600 * Server()->TickSpeed() / (1000 + GameServer()->m_apPlayers[m_Owner]->m_AccData.m_TurretSpeed * 30), m_Ammo--;
-		}break;
+		}
+		break;
 		case WEAPON_HAMMER:
 		{
 			if (distance(pTarget->m_Pos, m_Pos) > 30 && distance(pTarget->m_Pos, m_Pos) < 300)
@@ -169,7 +181,9 @@ void CTurret::Fire()
 				return;
 			}
 			SavePosion = m_Pos;
-		}break;
+		}
+		break;
+
 		case WEAPON_RIFLE:
 		{
 			vec2 Intersection;
@@ -216,7 +230,9 @@ void CTurret::Fire()
 					}
 				}
 			}
-		}break;
+		}
+		break;
+
 		case WEAPON_SHOTGUN:
 		{
 			int ShotSpread = 5 + GameServer()->m_apPlayers[m_Owner]->m_AccData.m_TurretLevel / 20;
@@ -237,11 +253,13 @@ void CTurret::Fire()
 				new CProjectile(GameWorld(), WEAPON_SHOTGUN, m_Owner, ProjStartPos, vec2(cosf(a), sinf(a))*Speed, (int)(Server()->TickSpeed()*1.5), 1+GameServer()->m_apPlayers[m_Owner]->m_AccData.m_TurretDmg/15, 0, 1, -1, WEAPON_SHOTGUN);
 
 			}
+
 			ExperienceTAdd();
 			Server()->SendMsg(&Msg, 0, m_Owner);
 			GameServer()->CreateSound(m_Pos, SOUND_SHOTGUN_FIRE);
 			m_ReloadTick = 3800 * Server()->TickSpeed() / (1000 + GameServer()->m_apPlayers[m_Owner]->m_AccData.m_TurretSpeed * 10), m_Ammo--;
-		}break;
+		}
+		break;
 	}
 }
 
