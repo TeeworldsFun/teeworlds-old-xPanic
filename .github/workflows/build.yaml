@@ -35,11 +35,13 @@ jobs:
           cd bam
           ./make_unix.sh
 
-      - name: Prepare
+      - name: Prepare Windows
         if: contains(matrix.os, 'windows')
         run: |
           cd bam
           ./make_winx64_msvc2005.bat
+
+      - name: Prepare Linux
         if: contains(matrix.os, 'ubuntu')
         run: |
           sudo apt-get update -y
