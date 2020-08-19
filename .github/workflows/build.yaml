@@ -35,13 +35,20 @@ jobs:
           cd bam
           ./make_unix.sh
 
-      - name: Prepare Windows
+      - name: Prepare
         if: contains(matrix.os, 'windows')
         run: |
           cd bam
           ./make_winx64_msvc2005.bat
+        if: contains(matrix.os, 'ubuntu')
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install libfreetype6-dev libsdl2-dev -y
+          cd bam
+          ./make_unix.sh
 
       - name: Build in Release mode
+        shell: bash
         run: ./bam/bam server_release
       - name: Test Release
         run: ./DDNet-Server shutdown
