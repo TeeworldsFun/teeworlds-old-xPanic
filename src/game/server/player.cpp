@@ -578,14 +578,17 @@ bool CPlayer::IsPlaying()
 
 void CPlayer::SetZomb(int From)
 {
+	if (m_Team == TEAM_RED)
+		return;
+
 	CNetMsg_Sv_KillMsg Msg;
+	Msg.m_ModeSpecial = 0;
 	
 	if(From == -5)
 	{
 		Msg.m_Killer = -1;
 		Msg.m_Victim = m_ClientID;
 		Msg.m_Weapon = WEAPON_WORLD;
-		Msg.m_ModeSpecial = 0;
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, -1);
 		
 		m_Team = TEAM_RED;
@@ -607,9 +610,12 @@ void CPlayer::SetZomb(int From)
 		if(GameServer()->GetPlayerChar(From) && From != m_ClientID)
 			GameServer()->GetPlayerChar(From)->ExperienceAdd(3 + m_AccData.m_Level / 50 * g_Config.m_SvExpBonus, From);
 	}
-	Msg.m_ModeSpecial = 0;
+
+	
 	Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, -1);
+
 	m_Team = TEAM_RED;
+
 	if (From == -1 || From == -3)
 	{
 		if (From == -1)
