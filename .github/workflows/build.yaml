@@ -31,21 +31,17 @@ jobs:
         if: contains(matrix.os, 'windows')
         run: |
           cd bam
-          ./make_winx64_msvc2005.bat
+          ./make_win32_msvc.bat
 
       - name: Prepare Linux
         if: contains(matrix.os, 'ubuntu')
         run: |
           sudo apt-get update -y
-          sudo apt-get install libfreetype6-dev libsdl2-dev -y
           cd bam
           ./make_unix.sh
 
       - name: Build in Release mode
-        shell: bash
-        run: |
-          ls
-          ./bam/bam server_release
+        run: ./bam/bam server_release
       - name: Test Release
         run: ./DDNet-Server shutdown
 
