@@ -47,7 +47,7 @@ bool CCharacter::Spawn(CPlayer *pPlayer, vec2 Pos)
 
 	m_Core.Reset();
 	m_Core.m_Id = GetPlayer()->GetCID();
-	m_Core.Init(World()->m_Core, GameServer()->Collision(), &((CGameControllerDDRace*)GameServer()->m_pController)->m_TeleOuts);
+	m_Core.Init(&World()->m_Core, GameServer()->Collision(), &((CGameControllerDDRace*)GameServer()->m_pController)->m_TeleOuts);
 	m_Core.m_Pos = m_Pos;
 	World()->m_Core.m_apCharacters[m_pPlayer->GetCID()] = &m_Core;
 	
@@ -1628,6 +1628,8 @@ void CCharacter::SetTurret()
 {
 	if (m_TurretActive[m_Core.m_ActiveWeapon])
 		return;
+
+	int ClientID = GetPlayer()->GetCID();
 
 	switch (m_Core.m_ActiveWeapon)
 	{
