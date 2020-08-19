@@ -27,14 +27,6 @@ jobs:
           ref: 4bffc62aa4bb184dfcd338d15d63903e561dcbed
           path: ./bam
 
-      - name: Prepare Linux
-        if: contains(matrix.os, 'ubuntu')
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install libfreetype6-dev libsdl2-dev -y
-          cd bam
-          ./make_unix.sh
-
       - name: Prepare Windows
         if: contains(matrix.os, 'windows')
         run: |
