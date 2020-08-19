@@ -20,6 +20,17 @@ jobs:
           git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
 
       - name: Build in release mode
-        run: ./bam server_release
+        run: sudo ./bam server_release
       - name: Test release
-        run: ./DDNet-Server shutdown
+        run: sudo ./DDNet-Server shutdown
+
+      - name: Package
+        run: |
+          mkdir artifacts
+          mv DDNet-Server artifacts
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: teeworlds-${{ matrix.os }}
+          path: ./artifacts
