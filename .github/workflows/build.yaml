@@ -42,8 +42,8 @@ jobs:
 
       - name: Build in Release mode
         if: contains(matrix.os, 'windows')
-        shell: bash
-        run: ./bam/bam.exe server_release
+        run: |
+          start bam/bam.exe server_release
 
       - name: Build in Release mode
         if: contains(matrix.os, 'ubuntu')
