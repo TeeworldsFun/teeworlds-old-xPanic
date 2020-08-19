@@ -18,7 +18,7 @@ jobs:
 
       - name: Build in release mode
         run: |
-          chmod 755 bam
+          chmod 755 ./bam
           bam server_release
       - name: Test release
         run: ./DDNet-Server shutdown
