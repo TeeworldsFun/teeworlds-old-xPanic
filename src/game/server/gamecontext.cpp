@@ -1254,10 +1254,10 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 						break;
 					case EMOTICON_DOTDOT:
 						pChr->SetEmoteType(EMOTE_BLINK);
-						break
+						break;
 					case EMOTICON_DROP:
 						pChr->SetEmoteType(EMOTE_BLINK);
-						break
+						break;
 					case EMOTICON_ZZZ:
 						pChr->SetEmoteType(EMOTE_BLINK);
 						break;
@@ -1281,10 +1281,12 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 						pChr->SetEmoteType(EMOTE_PAIN);
 						break;
 					case EMOTICON_DEVILTEE:
+						break;
 					case EMOTICON_SPLATTEE:
+						break;
 					case EMOTICON_ZOMG:
-							pChr->SetEmoteType(EMOTE_ANGRY);
-							break;
+						pChr->SetEmoteType(EMOTE_ANGRY);
+						break;
 					case EMOTICON_GHOST:
 						pChr->SetTurret();
 						break;

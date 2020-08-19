@@ -1651,14 +1651,14 @@ void CCharacter::SetTurret()
 		{
 			if (GameServer()->Collision()->IntersectLine(m_TurRifle, m_Pos, &m_Pos, 0, false))
 			{
-				SendChatTarget(ClientID, "Wall can't be placed between your points.");
+				GameServer()->SendChatTarget(ClientID, "Wall can't be placed between your points.");
 				m_TurRifle = vec2(0, 0);
 				return;
 			}
 
 			if (distance(m_TurRifle, m_Pos) < 50)
 			{
-				SendChatTarget(ClientID, "This distance is too short :(");
+				GameServer()->SendChatTarget(ClientID, "This distance is too short :(");
 				m_TurRifle = vec2(0, 0);
 				return;
 			}
@@ -1682,7 +1682,7 @@ void CCharacter::SetTurret()
 		{
 			if (Collision()->IntersectLine(m_TurGrenade, m_Pos, &m_Pos, 0, false))
 			{
-				SendChatTarget(ClientID, "Wall can't be placed between your points.");
+				GameServer()->SendChatTarget(ClientID, "Wall can't be placed between your points.");
 				m_TurGrenade = vec2(0, 0);
 				return;
 			}
