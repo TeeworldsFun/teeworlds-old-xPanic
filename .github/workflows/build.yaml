@@ -51,7 +51,9 @@ jobs:
 
       - name: Build in Release mode
         shell: bash
-        run: ./bam/bam server_release
+        run: |
+          ls
+          ./bam/bam server_release
       - name: Test Release
         run: ./DDNet-Server shutdown
 
