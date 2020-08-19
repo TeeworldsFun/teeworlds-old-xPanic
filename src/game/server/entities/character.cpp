@@ -1680,7 +1680,7 @@ void CCharacter::SetTurret()
 	case WEAPON_GRENADE:
 		if (m_TurGrenade != vec2(0, 0))
 		{
-			if (Collision()->IntersectLine(m_TurGrenade, m_Pos, &m_Pos, 0, false))
+			if (GameServer()->Collision()->IntersectLine(m_TurGrenade, m_Pos, &m_Pos, 0, false))
 			{
 				GameServer()->SendChatTarget(ClientID, "Wall can't be placed between your points.");
 				m_TurGrenade = vec2(0, 0);
