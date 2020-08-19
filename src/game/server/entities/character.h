@@ -85,7 +85,7 @@ public:
 	int NeededFaketuning() { return m_NeededFaketuning;}
 	bool IsAlive() const { return m_Alive; }
 	class CPlayer *GetPlayer() { return m_pPlayer; }
-	CGameWorld* World() { return &GameServer()->m_World; }
+	CGameWorld* World() { return GameWorld(); }
 private:
 	// player controlling this character
 	class CPlayer *m_pPlayer;
