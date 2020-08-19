@@ -47,7 +47,7 @@ bool CCharacter::Spawn(CPlayer *pPlayer, vec2 Pos)
 
 	m_Core.Reset();
 	m_Core.m_Id = GetPlayer()->GetCID();
-	m_Core.Init(&GameServer()->m_World.m_Core, GameServer()->Collision(), &((CGameControllerDDRace*)GameServer()->m_pController)->m_Teams.m_Core, &((CGameControllerDDRace*)GameServer()->m_pController)->m_TeleOuts);
+	m_Core.Init(&GameServer()->m_World.m_Core, GameServer()->Collision(), &((CGameControllerDDRace*)GameServer()->m_pController)->m_TeleOuts);
 	m_Core.m_Pos = m_Pos;
 	GameServer()->m_World.m_Core.m_apCharacters[m_pPlayer->GetCID()] = &m_Core;
 	
@@ -107,7 +107,7 @@ void CCharacter::SetWeapon(int W)
 	m_LastWeapon = m_Core.m_ActiveWeapon;
 	m_QueuedWeapon = -1;
 	m_Core.m_ActiveWeapon = W;
-	GameServer()->CreateSound(m_Pos, SOUND_WEAPON_SWITCH, Teams()->TeamMask(Team(), -1, m_pPlayer->GetCID()));
+	GameServer()->CreateSound(m_Pos, SOUND_WEAPON_SWITCH);
 
 	if(m_Core.m_ActiveWeapon < 0 || m_Core.m_ActiveWeapon >= NUM_WEAPONS)
 		m_Core.m_ActiveWeapon = 0;
@@ -293,7 +293,7 @@ void CCharacter::FireWeapon()
 		case WEAPON_HAMMER:
 		{
 			m_NumObjectsHit = 0;
-			GameServer()->CreateSound(m_Pos, SOUND_HAMMER_FIRE, Teams()->TeamMask(Team(), -1, m_pPlayer->GetCID()));
+			GameServer()->CreateSound(m_Pos, SOUND_HAMMER_FIRE);
 			CCharacter *apEnts[MAX_CLIENTS];
 			int Hits = 0;
 			if (m_pPlayer->GetTeam() == TEAM_RED)
@@ -308,7 +308,7 @@ void CCharacter::FireWeapon()
 				if(slowBomb && Fistbomb)
 				{
 					new CProjectile(GameWorld(), WEAPON_GRENADE, m_pPlayer->GetCID(), m_Pos, Direction, (int)(Server()->TickSpeed()*GameServer()->Tuning()->m_GrenadeLifetime), 0, false, 17, SOUND_GRENADE_EXPLODE, WEAPON_HAMMER);
-					GameServer()->CreateSound(m_Pos, SOUND_GRENADE_FIRE, Teams()->TeamMask(Team(), -1, m_pPlayer->GetCID()));
+					GameServer()->CreateSound(m_Pos, SOUND_GRENADE_FIRE);
 					slowBomb = false;
 					Fistbomb = false;
 					ThrownBomb = true;
@@ -347,9 +347,9 @@ void CCharacter::FireWeapon()
 						continue;
 
 					if (length(pTarget->m_Pos - ProjStartPos) > 0.0f)
-						GameServer()->CreateHammerHit(pTarget->m_Pos - normalize(pTarget->m_Pos - ProjStartPos)*m_ProximityRadius*0.5f, Teams()->TeamMask(Team(), -1, m_pPlayer->GetCID()));
+						GameServer()->CreateHammerHit(pTarget->m_Pos - normalize(pTarget->m_Pos - ProjStartPos)*m_ProximityRadius*0.5f);
 					else
-						GameServer()->CreateHammerHit(ProjStartPos, Teams()->TeamMask(Team(), -1, m_pPlayer->GetCID()));
+						GameServer()->CreateHammerHit(ProjStartPos);
 
 					if (!pTarget->IhammerTick)
 						pTarget->m_pPlayer->SetZomb(m_pPlayer->GetCID());
@@ -380,9 +380,9 @@ void CCharacter::FireWeapon()
 						continue;
 
 					if (length(pTarget->m_Pos - ProjStartPos) > 0.0f)
-						GameServer()->CreateHammerHit(pTarget->m_Pos - normalize(pTarget->m_Pos - ProjStartPos)*m_ProximityRadius*0.5f, Teams()->TeamMask(Team(), -1, m_pPlayer->GetCID()));
+						GameServer()->CreateHammerHit(pTarget->m_Pos - normalize(pTarget->m_Pos - ProjStartPos)*m_ProximityRadius*0.5f);
 					else
-						GameServer()->CreateHammerHit(ProjStartPos, Teams()->TeamMask(Team(), -1, m_pPlayer->GetCID()));
+						GameServer()->CreateHammerHit(ProjStartPos);
 
 					if(m_pPlayer->m_AccData.m_PlayerState == 2)
 					{
@@ -437,7 +437,7 @@ void CCharacter::FireWeapon()
 		case WEAPON_GRENADE:
 		{
 			new CProjectile(GameWorld(), WEAPON_GRENADE, m_pPlayer->GetCID(), ProjStartPos, Direction, (int)(Server()->TickSpeed()*GameServer()->Tuning()->m_GrenadeLifetime), 0, true, 17, SOUND_GRENADE_EXPLODE, WEAPON_GRENADE);
-			GameServer()->CreateSound(m_Pos, SOUND_GRENADE_FIRE, Teams()->TeamMask(Team(), -1, m_pPlayer->GetCID()));
+			GameServer()->CreateSound(m_Pos, SOUND_GRENADE_FIRE);
 		} break;
 
 		case WEAPON_RIFLE:
@@ -684,7 +684,7 @@ void CCharacter::Tick()
 			m_Core.m_Vel *= 0.5;
 			if (m_BurnTick % 20 == 0)
 			{
-				GameServer()->CreateExplosion(m_Core.m_Pos, m_pPlayer->GetCID(), WEAPON_GRENADE, true, -1, Teams()->TeamMask(Team(), -1, m_pPlayer->GetCID()));
+				GameServer()->CreateExplosion(m_Core.m_Pos, m_pPlayer->GetCID(), WEAPON_GRENADE, true, -1);
 				TakeDamage(vec2(0, 0), 1, m_BurnedFrom, WEAPON_GRENADE);
 			}
 		}
@@ -761,7 +761,7 @@ void CCharacter::TickDefered()
 
 	if(Events&COREEVENT_GROUND_JUMP) GameServer()->CreateSound(m_Pos, SOUND_PLAYER_JUMP, Teams()->TeamMask(Team(), m_pPlayer->GetCID()));
 
-	if(Events&COREEVENT_HOOK_ATTACH_PLAYER) GameServer()->CreateSound(m_Pos, SOUND_HOOK_ATTACH_PLAYER, Teams()->TeamMask(Team(), -1, m_pPlayer->GetCID()));
+	if(Events&COREEVENT_HOOK_ATTACH_PLAYER) GameServer()->CreateSound(m_Pos, SOUND_HOOK_ATTACH_PLAYER);
 	if(Events&COREEVENT_HOOK_ATTACH_GROUND) GameServer()->CreateSound(m_Pos, SOUND_HOOK_ATTACH_GROUND, Teams()->TeamMask(Team(), m_pPlayer->GetCID(), m_pPlayer->GetCID()));
 	if(Events&COREEVENT_HOOK_HIT_NOHOOK) GameServer()->CreateSound(m_Pos, SOUND_HOOK_NOATTACH, Teams()->TeamMask(Team(), m_pPlayer->GetCID(), m_pPlayer->GetCID()));
 
@@ -875,13 +875,13 @@ void CCharacter::Die(int Killer, int Weapon)
 		Msg.m_ModeSpecial = ModeSpecial;
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, -1);
 	}
-	GameServer()->CreateSound(m_Pos, SOUND_PLAYER_DIE, Teams()->TeamMask(Team(), -1, m_pPlayer->GetCID()));
+	GameServer()->CreateSound(m_Pos, SOUND_PLAYER_DIE);
 	m_pPlayer->m_DieTick = Server()->Tick();
 	
 	m_Alive = false;
 	GameServer()->m_World.RemoveEntity(this);
 	GameServer()->m_World.m_Core.m_apCharacters[m_pPlayer->GetCID()] = 0;
-	GameServer()->CreateDeath(m_Pos, m_pPlayer->GetCID(), Teams()->TeamMask(Team(), -1, m_pPlayer->GetCID()));
+	GameServer()->CreateDeath(m_Pos, m_pPlayer->GetCID());
 }
 
 bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon)

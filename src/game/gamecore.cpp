@@ -57,13 +57,12 @@ float VelocityRamp(float Value, float Start, float Range, float Curvature)
 	return 1.0f/powf(Curvature, (Value-Start)/Range);
 }
 
-void CCharacterCore::Init(CWorldCore *pWorld, CCollision *pCollision, CTeamsCore* pTeams)
+void CCharacterCore::Init(CWorldCore *pWorld, CCollision *pCollision)
 {
 	m_pWorld = pWorld;
 	m_pCollision = pCollision;
 	m_pTeleOuts = NULL;
 
-	m_pTeams = pTeams;
 	m_Id = -1;
 	m_Hook = true;
 	m_Collision = true;
@@ -71,13 +70,12 @@ void CCharacterCore::Init(CWorldCore *pWorld, CCollision *pCollision, CTeamsCore
 	m_Jumps = 2;
 }
 
-void CCharacterCore::Init(CWorldCore *pWorld, CCollision *pCollision, CTeamsCore* pTeams, std::map<int, std::vector<vec2> > *pTeleOuts)
+void CCharacterCore::Init(CWorldCore *pWorld, CCollision *pCollision, std::map<int, std::vector<vec2> > *pTeleOuts)
 {
 	m_pWorld = pWorld;
 	m_pCollision = pCollision;
 	m_pTeleOuts = pTeleOuts;
 
-	m_pTeams = pTeams;
 	m_Id = -1;
 	m_Hook = true;
 	m_Collision = true;
