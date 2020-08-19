@@ -47,7 +47,7 @@ bool CCharacter::Spawn(CPlayer *pPlayer, vec2 Pos)
 
 	m_Core.Reset();
 	m_Core.m_Id = GetPlayer()->GetCID();
-	m_Core.Init(&World()->m_Core, GameServer()->Collision(), &((CGameControllerDDRace*)GameServer()->m_pController)->m_TeleOuts);
+	m_Core.Init(World()->m_Core, GameServer()->Collision(), &((CGameControllerDDRace*)GameServer()->m_pController)->m_TeleOuts);
 	m_Core.m_Pos = m_Pos;
 	World()->m_Core.m_apCharacters[m_pPlayer->GetCID()] = &m_Core;
 	
@@ -1633,15 +1633,15 @@ void CCharacter::SetTurret()
 	{
 
 	case WEAPON_HAMMER:
-		new CTurret(&World(), m_Pos, ClientID, WEAPON_HAMMER);
+		new CTurret(World(), m_Pos, ClientID, WEAPON_HAMMER);
 		break;
 
 	case WEAPON_GUN:
-		new CTurret(&World(), m_Pos, ClientID, WEAPON_GUN);
+		new CTurret(World(), m_Pos, ClientID, WEAPON_GUN);
 		break;
 
 	case WEAPON_SHOTGUN:
-		new CTurret(&World(), m_Pos, ClientID, WEAPON_SHOTGUN);
+		new CTurret(World(), m_Pos, ClientID, WEAPON_SHOTGUN);
 		break;
 
 	case WEAPON_RIFLE:
@@ -1668,7 +1668,7 @@ void CCharacter::SetTurret()
 				SecondSpot = m_TurRifle + Dir * 360;
 			}
 
-			new CTurret(&World(), m_TurRifle, ClientID, WEAPON_RIFLE, m_TurRifle, SecondSpot);
+			new CTurret(World(), m_TurRifle, ClientID, WEAPON_RIFLE, m_TurRifle, SecondSpot);
 			m_TurRifle = vec2(0, 0);
 		}
 		else
@@ -1699,7 +1699,7 @@ void CCharacter::SetTurret()
 				SecondSpot = m_TurGrenade + Dir * 360;
 			}
 
-			new CTurret(&World(), m_TurGrenade, ClientID, WEAPON_GRENADE, m_TurGrenade, SecondSpot);
+			new CTurret(World(), m_TurGrenade, ClientID, WEAPON_GRENADE, m_TurGrenade, SecondSpot);
 			m_TurGrenade = vec2(0, 0);
 		}
 		else
