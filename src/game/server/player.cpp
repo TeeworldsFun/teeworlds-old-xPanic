@@ -62,11 +62,9 @@ void CPlayer::Reset()
 	}
 	idMap[0] = m_ClientID;
 
-	m_LastCommandPos = m_Sent1stAfkWarning = m_Sent2ndAfkWarning = m_ChatScore = m_LastSetSpectatorMode = 0;
 	m_LastPlaytime = time_get();
 	m_EyeEmote = true;
 	m_DefEmote = EMOTE_NORMAL;
-	m_Afk = false;
 	m_LifeActives = false;
 	m_LastWhisperTo = -1;
 	m_TimeoutCode[0] = '\0';
@@ -78,8 +76,6 @@ void CPlayer::Reset()
 	m_DefEmoteReset = -1;
 
 	m_ClientVersion = VERSION_VANILLA;
-	m_ShowOthers = g_Config.m_SvShowOthersDefault;
-	m_ShowAll = g_Config.m_SvShowAllDefault;
 	m_SpecTeam = m_NextPauseTick = 0;
 }
 
@@ -97,9 +93,6 @@ void CPlayer::Tick()
 		m_KillMe = 0;
 		return;
 	}
-
-	if (m_ChatScore > 0)
-		m_ChatScore--;
 
 	if (m_AccData.m_UserID && m_AccData.m_Exp >= m_AccData.m_Level)
 	{
@@ -351,7 +344,6 @@ void CPlayer::OnPredictedInput(CNetObj_PlayerInput *NewInput)
 	if((m_PlayerFlags&PLAYERFLAG_CHATTING) && (NewInput->m_PlayerFlags&PLAYERFLAG_CHATTING))
 		return;
 
-	AfkVoteTimer(NewInput);
 	m_NumInputs++;
 
 	if(m_pCharacter)
@@ -360,10 +352,6 @@ void CPlayer::OnPredictedInput(CNetObj_PlayerInput *NewInput)
 
 void CPlayer::OnDirectInput(CNetObj_PlayerInput *NewInput)
 {
-	if (AfkTimer(NewInput->m_TargetX, NewInput->m_TargetY))
-		return; // we must return if kicked, as player struct is already deleted
-	AfkVoteTimer(NewInput);
-
 	if(NewInput->m_PlayerFlags&PLAYERFLAG_CHATTING)
 	{
 	// skip the input if chat is active
@@ -490,92 +478,6 @@ void CPlayer::TryRespawn()
 	GameServer()->CreatePlayerSpawn(SpawnPos);
 }
 
-bool CPlayer::AfkTimer(int NewTargetX, int NewTargetY)
-{
-	/*
-		afk timer (x, y = mouse coordinates)
-		Since a player has to move the mouse to play, this is a better method than checking
-		the player's position in the game world, because it can easily be bypassed by just locking a key.
-		Frozen players could be kicked as well, because they can't move.
-		It also works for spectators.
-		returns true if kicked
-	*/
-
-	if(m_Authed)
-		return false; // don't kick admins
-	if(g_Config.m_SvMaxAfkTime == 0)
-		return false; // 0 = disabled
-
-	if(NewTargetX != m_LastTarget_x || NewTargetY != m_LastTarget_y)
-	{
-		m_LastPlaytime = time_get();
-		m_LastTarget_x = NewTargetX;
-		m_LastTarget_y = NewTargetY;
-		m_Sent1stAfkWarning = 0; // afk timer's 1st warning after 50% of sv_max_afk_time
-		m_Sent2ndAfkWarning = 0;
-
-	}
-	else
-	{
-		// not playing, check how long
-		if(m_Sent1stAfkWarning == 0 && m_LastPlaytime < time_get()-time_freq()*(int)(g_Config.m_SvMaxAfkTime*0.5))
-		{
-			sprintf(
-				m_pAfkMsg,
-				"You have been afk for %d seconds now. Please note that you get kicked after not playing for %d seconds.",
-				(int)(g_Config.m_SvMaxAfkTime*0.5),
-				g_Config.m_SvMaxAfkTime
-			);
-			m_pGameServer->SendChatTarget(m_ClientID, m_pAfkMsg);
-			m_Sent1stAfkWarning = 1;
-		}
-		else if(m_Sent2ndAfkWarning == 0 && m_LastPlaytime < time_get()-time_freq()*(int)(g_Config.m_SvMaxAfkTime*0.9))
-		{
-			sprintf(
-				m_pAfkMsg,
-				"You have been afk for %d seconds now. Please note that you get kicked after not playing for %d seconds.",
-				(int)(g_Config.m_SvMaxAfkTime*0.9),
-				g_Config.m_SvMaxAfkTime
-			);
-			m_pGameServer->SendChatTarget(m_ClientID, m_pAfkMsg);
-			m_Sent2ndAfkWarning = 1;
-		}
-		else if(m_LastPlaytime < time_get()-time_freq()*g_Config.m_SvMaxAfkTime)
-		{
-			CServer* serv =	(CServer*)m_pGameServer->Server();
-			serv->Kick(m_ClientID,"Away from keyboard");
-			return true;
-		}
-	}
-	return false;
-}
-
-void CPlayer::AfkVoteTimer(CNetObj_PlayerInput *NewTarget)
-{
-	if(g_Config.m_SvMaxAfkVoteTime == 0)
-		return;
-
-	if(mem_comp(NewTarget, &m_LastTarget, sizeof(CNetObj_PlayerInput)) != 0)
-	{
-		m_LastPlaytime = time_get();
-		mem_copy(&m_LastTarget, NewTarget, sizeof(CNetObj_PlayerInput));
-	}
-	else if(m_LastPlaytime < time_get()-time_freq()*g_Config.m_SvMaxAfkVoteTime)
-	{
-		m_Afk = true;
-		return;
-	}
-
-	m_Afk = false;
-}
-
-bool CPlayer::IsPlaying()
-{
-	if(m_pCharacter && m_pCharacter->IsAlive())
-		return true;
-	return false;
-}
-
 void CPlayer::SetZomb(int From)
 {
 	if (m_Team == TEAM_RED)
@@ -636,8 +538,6 @@ void CPlayer::SetZomb(int From)
 	m_pCharacter->SetZomb();
 	GameServer()->m_pController->OnPlayerInfoChange(GameServer()->m_apPlayers[m_ClientID]);
 	GameServer()->m_pController->CheckZomb();
-/*	GameServer()->SendChatTarget(m_ClientID, "You are the first zombie! Infect all humans. o_O");
-	GameServer()->SendChatTarget(m_ClientID, "Do mouse scroll down to throw the heart.");		*/
 }
 
 void CPlayer::ResetZomb()

@@ -57,14 +57,6 @@ int64_t CGameTeams::TeamMask(int Team, int ExceptID, int Asker)
 				} // ShowOthers
 			} // See everything of player you're spectating
 		}
-		else
-		{ // Freeview
-			if (GetPlayer(i)->m_SpecTeam)
-			{ // Show only players in own team when spectating
-				if (m_Core.Team(i) != Team && m_Core.Team(i) != TEAM_SUPER)
-					continue; // in different teams
-			}
-		}
 
 		Mask |= 1LL << i;
 	}

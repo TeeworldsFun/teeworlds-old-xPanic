@@ -85,8 +85,6 @@ public:
 	// helper functions
 	class CCharacter *GetPlayerChar(int ClientID);
 
-	//int m_LockTeams;
-
 	// voting
 	void StartVote(const char *pDesc, const char *pCommand, const char *pReason);
 	void EndVote();
@@ -246,6 +244,7 @@ private:
 	{
 		MAX_MUTES=32,
 	};
+
 	struct CMute
 	{
 		NETADDR m_Addr;

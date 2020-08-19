@@ -992,7 +992,7 @@ void CCharacter::Snap(int SnappingClient)
 		if(SnapPlayer->GetTeam() != TEAM_SPECTATORS && SnapChar && !CanCollide(SnappingClient) && !SnapPlayer->m_ShowOthers)
 			return;
 
-		if(SnapPlayer->GetTeam() == TEAM_SPECTATORS && SnapPlayer->m_SpectatorID == -1 && !CanCollide(SnappingClient) && SnapPlayer->m_SpecTeam)
+		if(SnapPlayer->GetTeam() == TEAM_SPECTATORS && SnapPlayer->m_SpectatorID == -1 && !CanCollide(SnappingClient))
 			return;
 	}
 
@@ -1188,9 +1188,6 @@ void CCharacter::Snap(int SnappingClient)
 		if(m_aWeapons[m_Core.m_ActiveWeapon].m_Ammo > 0)
 			pCharacter->m_AmmoCount = m_aWeapons[m_Core.m_ActiveWeapon].m_Ammo;
 	}
-
-	if (GetPlayer()->m_Afk)
-		pCharacter->m_Emote = EMOTE_BLINK;
 
 	if(GetPlayer()->m_RangeShop)
 		pCharacter->m_Emote = EMOTE_ANGRY;
