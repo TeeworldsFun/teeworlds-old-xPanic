@@ -10,8 +10,6 @@
 
 #include <game/gamecore.h>
 
-class CGameTeams;
-
 enum
 {
 	WEAPON_GAME = -3, // team switching etc
@@ -157,8 +155,6 @@ private:
 	int m_InvisID;
 
 public:
-	CGameTeams* Teams();
-	void DestroyChildEntities();
 	int Team();
 	bool CanCollide(int ClientID);
 	bool SameTeam(int ClientID);

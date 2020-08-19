@@ -1234,19 +1234,6 @@ bool CCharacter::CanCollide(int ClientID)
 	return Teams()->m_Core.CanCollide(GetPlayer()->GetCID(), ClientID);
 }
 
-bool CCharacter::SameTeam(int ClientID)
-{
-	return Teams()->m_Core.SameTeam(GetPlayer()->GetCID(), ClientID);
-}
-
-int CCharacter::Team(){
-	return Teams()->m_Core.Team(m_pPlayer->GetCID());
-}
-
-CGameTeams* CCharacter::Teams(){
-	return &((CGameControllerDDRace*)GameServer()->m_pController)->m_Teams;
-}
-
 void CCharacter::HandleSkippableTiles(int Index)
 {
 	// handle death-tiles and leaving gamelayer
