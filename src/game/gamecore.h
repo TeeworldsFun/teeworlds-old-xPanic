@@ -13,8 +13,6 @@
 #include "collision.h"
 #include <engine/shared/protocol.h>
 #include <game/generated/protocol.h>
-
-#include "teamscore.h"
 #include "mapitems.h"
 
 
