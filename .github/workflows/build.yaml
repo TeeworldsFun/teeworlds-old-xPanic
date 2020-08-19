@@ -39,9 +39,20 @@ jobs:
         if: contains(matrix.os, 'windows')
         run: |
           cd bam
-          ./make_win64_msvc.bat
+          ./make_winx64_msvc2005.bat
 
       - name: Build in Release mode
         run: ./bam/bam server_release
       - name: Test Release
         run: ./DDNet-Server shutdown
+
+      - name: Package
+        run: |
+          mkdir artifacts
+          mv DDNet-Server artifacts
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: teeworlds-${{ matrix.os }}
+          path: ./artifacts
