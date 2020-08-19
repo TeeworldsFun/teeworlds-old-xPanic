@@ -207,9 +207,7 @@ void CGameWorld::UpdatePlayerMaps()
 				!ch->CanCollide(i) &&
 				(!GameServer()->m_apPlayers[i] ||
 					GameServer()->m_apPlayers[i]->m_ClientVersion == VERSION_VANILLA ||
-					(GameServer()->m_apPlayers[i]->m_ClientVersion >= VERSION_DDRACE &&
-					!GameServer()->m_apPlayers[i]->m_ShowOthers
-					)
+					GameServer()->m_apPlayers[i]->m_ClientVersion >= VERSION_DDRACE
 				)
 			)
 				dist[j].first = 1e8;

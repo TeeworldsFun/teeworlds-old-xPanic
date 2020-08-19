@@ -1208,13 +1208,14 @@ void CCharacter::Snap(int SnappingClient)
 	pCharacter->m_PlayerFlags = GetPlayer()->m_PlayerFlags;
 }
 
-int CCharacter::NetworkClipped(int SnappingClient){
+int CCharacter::NetworkClipped(int SnappingClient)
+{
 	return NetworkClipped(SnappingClient, m_Pos);
 }
 
 int CCharacter::NetworkClipped(int SnappingClient, vec2 CheckPos)
 {
-	if(SnappingClient == -1 || GameServer()->m_apPlayers[SnappingClient]->m_ShowAll)
+	if(SnappingClient == -1)
 		return 0;
 
 	float dx = GameServer()->m_apPlayers[SnappingClient]->m_ViewPos.x-CheckPos.x;
@@ -1228,10 +1229,13 @@ int CCharacter::NetworkClipped(int SnappingClient, vec2 CheckPos)
 	return 0;
 }
 
-bool CCharacter::CanCollide(int ClientID){
+bool CCharacter::CanCollide(int ClientID)
+{
 	return Teams()->m_Core.CanCollide(GetPlayer()->GetCID(), ClientID);
 }
-bool CCharacter::SameTeam(int ClientID){
+
+bool CCharacter::SameTeam(int ClientID)
+{
 	return Teams()->m_Core.SameTeam(GetPlayer()->GetCID(), ClientID);
 }
 
