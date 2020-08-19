@@ -204,7 +204,6 @@ void CGameWorld::UpdatePlayerMaps()
 			// copypasted chunk from character.cpp Snap() follows
 			CCharacter* SnapChar = GameServer()->GetPlayerChar(i);
 			if(SnapChar && GameServer()->m_apPlayers[i]->GetTeam() != -1 &&
-				!ch->CanCollide(i) &&
 				(!GameServer()->m_apPlayers[i] ||
 					GameServer()->m_apPlayers[i]->m_ClientVersion == VERSION_VANILLA ||
 					GameServer()->m_apPlayers[i]->m_ClientVersion >= VERSION_DDRACE
@@ -311,7 +310,7 @@ CCharacter *CGameWorld::IntersectCharacter(vec2 Pos0, vec2 Pos1, float Radius, v
 		if(p == pNotThis)
 			continue;
 
-		if(CollideWith != -1 && !p->CanCollide(CollideWith))
+		if(CollideWith != -1)
 			continue;
 
 		vec2 IntersectPos = closest_point_on_line(Pos0, Pos1, p->m_Pos);

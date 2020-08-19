@@ -188,7 +188,6 @@ public:
 	// DDRace
 
 	int ProcessSpamProtection(int ClientID);
-	int GetDDRaceTeam(int ClientID);
 	int64 m_LastMapVote;
 	int m_aaExtIDs[MAX_CLIENTS];
 	

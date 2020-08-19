@@ -153,8 +153,8 @@ void CGameContext::CreateExplosion(vec2 Pos, int Owner, int Weapon, bool NoDamag
 			if((int)Dmg)
 				if((GetPlayerChar(Owner) || NoDamage) || Owner == apEnts[i]->GetPlayer()->GetCID())
 				{
-					if(Owner != -1 && apEnts[i]->IsAlive() && !apEnts[i]->CanCollide(Owner)) continue;
-					if(Owner == -1 && ActivatedTeam != -1 && apEnts[i]->IsAlive() && apEnts[i]->Team() != ActivatedTeam) continue;
+					if(Owner != -1 && apEnts[i]->IsAlive()) continue;
+					if(Owner == -1 && ActivatedTeam != -1 && apEnts[i]->IsAlive()) continue;
 					apEnts[i]->TakeDamage(ForceDir*Dmg*2, (int)Dmg+m_apPlayers[Owner]->m_AccData.m_Dmg/3, Owner, Weapon);
 					if(NoDamage) break;
 				}
@@ -287,9 +287,7 @@ void CGameContext::SendChatTarget(int To, const char *pText)
 
 void CGameContext::SendChatTeam(int Team, const char *pText)
 {
-	for(int i = 0; i<MAX_CLIENTS; i++)
-		if(((CGameControllerDDRace*)m_pController)->m_Teams.m_Core.Team(i) == Team)
-			SendChatTarget(i, pText);
+	return;
 }
 
 void CGameContext::SendChat(int ChatterClientID, int Team, const char *pText, int SpamProtectionClientID)
@@ -334,7 +332,6 @@ void CGameContext::SendChat(int ChatterClientID, int Team, const char *pText, in
 	}
 	else
 	{
-		CTeamsCore * Teams = &((CGameControllerDDRace*)m_pController)->m_Teams.m_Core;
 		CNetMsg_Sv_Chat Msg;
 		Msg.m_Team = 1;
 		Msg.m_ClientID = ChatterClientID;
@@ -556,7 +553,7 @@ void CGameContext::OnTick()
 						continue;
 
 					if((m_VoteKick || m_VoteSpec) && ((!m_apPlayers[i] || m_apPlayers[i]->GetTeam() == TEAM_SPECTATORS) ||
-						 (GetPlayerChar(m_VoteCreator) && GetPlayerChar(i) && GetPlayerChar(m_VoteCreator)->Team() != GetPlayerChar(i)->Team())))
+						 (GetPlayerChar(m_VoteCreator) && GetPlayerChar(i))))
 						continue;
 
 					if(i != m_VoteCreator)
@@ -912,14 +909,6 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 			if(Length == 0 || (pMsg->m_pMessage[0]!='/' && (g_Config.m_SvSpamprotection && pPlayer->m_LastChat && pPlayer->m_LastChat+Server()->TickSpeed()*((31+Length)/32) > Server()->Tick())))
 				return;
 
-			//pPlayer->m_LastChat = Server()->Tick();
-
-			int GameTeam = ((CGameControllerDDRace*)m_pController)->m_Teams.m_Core.Team(pPlayer->GetCID());
-			if(Team)
-				Team = ((pPlayer->GetTeam() == -1) ? CHAT_SPEC : GameTeam);
-			else
-				Team = CHAT_ALL;
-
 			if(pMsg->m_pMessage[0]=='/')
 				pPlayer->m_pChatCmd->ChatCmd(pMsg);
 			else
@@ -1087,7 +1076,7 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 				}
 
 				// Don't allow kicking if a player has no character
-				if(!GetPlayerChar(ClientID) || !GetPlayerChar(KickID) || GetDDRaceTeam(ClientID) != GetDDRaceTeam(KickID))
+				if(!GetPlayerChar(ClientID) || !GetPlayerChar(KickID))
 				{
 					SendChatTarget(ClientID, "You can kick only your team member");
 					m_apPlayers[ClientID]->m_Last_KickVote = time_get();
@@ -1133,7 +1122,7 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 					return;
 				}
 
-				if(!GetPlayerChar(ClientID) || !GetPlayerChar(SpectateID) || GetDDRaceTeam(ClientID) != GetDDRaceTeam(SpectateID))
+				if(!GetPlayerChar(ClientID) || !GetPlayerChar(SpectateID))
 				{
 					SendChatTarget(ClientID, "You can only move your team member to specators");
 					return;
@@ -2377,12 +2366,6 @@ int CGameContext::ProcessSpamProtection(int ClientID)
 	}
 
 	return 0;
-}
-
-int CGameContext::GetDDRaceTeam(int ClientID)
-{
-	CGameControllerDDRace* pController = (CGameControllerDDRace*)m_pController;
-	return pController->m_Teams.m_Core.Team(ClientID);
 }
 
 void CGameContext::ResetTuning()
