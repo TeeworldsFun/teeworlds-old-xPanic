@@ -343,19 +343,10 @@ void CGameContext::SendChat(int ChatterClientID, int Team, const char *pText, in
 
 		// send to the clients
 		for(int i = 0; i < MAX_CLIENTS; i++)
-		{
-			if(m_apPlayers[i] != 0) {
-				if(Team == CHAT_SPEC) {
-					if(m_apPlayers[i]->GetTeam() == CHAT_SPEC) {
+			if(m_apPlayers[i] != 0) 
+				if(Team == CHAT_SPEC) 
+					if(m_apPlayers[i]->GetTeam() == CHAT_SPEC) 
 						Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NORECORD, i);
-					}
-				} else {
-					if(Teams->Team(i) == Team && m_apPlayers[i]->GetTeam() != CHAT_SPEC) {
-						Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NORECORD, i);
-					}
-				}
-			}
-		}
 	}
 }
 
@@ -1963,7 +1954,6 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 	LoadMapSettings();
 
 	m_pController = new CGameControllerDDRace(this);
-	((CGameControllerDDRace*)m_pController)->m_Teams.Reset();
 
 	// create all entities from the game layer
 	CMapItemLayerTilemap *pTileMap = m_Layers.GameLayer();

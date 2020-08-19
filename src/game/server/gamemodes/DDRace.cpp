@@ -9,7 +9,7 @@
 #include "DDRace.h"
 
 CGameControllerDDRace::CGameControllerDDRace(class CGameContext *pGameServer) :
-		IGameController(pGameServer), m_Teams(pGameServer)
+		IGameController(pGameServer)
 {
 	m_pGameType = g_Config.m_SvGametype;
 	InitTeleporter();
