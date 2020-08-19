@@ -31,7 +31,7 @@ jobs:
         if: contains(matrix.os, 'windows')
         run: |
           cd bam
-          ./make_win32_msvc.bat
+          ./make_win32_mingw.bat
 
       - name: Prepare Linux
         if: contains(matrix.os, 'ubuntu')
