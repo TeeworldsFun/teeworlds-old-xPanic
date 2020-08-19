@@ -1689,7 +1689,7 @@ void CCharacter::SetTurret()
 
 			if (distance(m_TurGrenade, m_Pos) < 50)
 			{
-				SendChatTarget(ClientID, "This distance is too small! :(");
+				GameServer()->SendChatTarget(ClientID, "This distance is too small! :(");
 				m_TurGrenade = vec2(0, 0);
 				return;
 			}
