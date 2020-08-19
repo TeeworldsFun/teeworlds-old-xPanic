@@ -376,7 +376,7 @@ void CCharacter::FireWeapon()
 				{
 					CCharacter *pTarget = apEnts[i];
 
-					if ((pTarget == this || (pTarget->IsAlive() && !CanCollide(pTarget->GetPlayer()->GetCID())) || pTarget->m_pPlayer->GetTeam() != TEAM_RED))
+					if (pTarget == this || pTarget->IsAlive() || pTarget->m_pPlayer->GetTeam() != TEAM_RED)
 						continue;
 
 					if (length(pTarget->m_Pos - ProjStartPos) > 0.0f)
@@ -762,8 +762,8 @@ void CCharacter::TickDefered()
 	if(Events&COREEVENT_GROUND_JUMP) GameServer()->CreateSound(m_Pos, SOUND_PLAYER_JUMP);
 
 	if(Events&COREEVENT_HOOK_ATTACH_PLAYER) GameServer()->CreateSound(m_Pos, SOUND_HOOK_ATTACH_PLAYER);
-	if(Events&COREEVENT_HOOK_ATTACH_GROUND) GameServer()->CreateSound(m_Pos, SOUND_HOOK_ATTACH_GROUND, Teams()->TeamMask(Team(), m_pPlayer->GetCID(), m_pPlayer->GetCID()));
-	if(Events&COREEVENT_HOOK_HIT_NOHOOK) GameServer()->CreateSound(m_Pos, SOUND_HOOK_NOATTACH, Teams()->TeamMask(Team(), m_pPlayer->GetCID(), m_pPlayer->GetCID()));
+	if(Events&COREEVENT_HOOK_ATTACH_GROUND) GameServer()->CreateSound(m_Pos, SOUND_HOOK_ATTACH_GROUND, m_pPlayer->GetCID()));
+	if(Events&COREEVENT_HOOK_HIT_NOHOOK) GameServer()->CreateSound(m_Pos, SOUND_HOOK_NOATTACH, m_pPlayer->GetCID()));
 
 
 	if(m_pPlayer->GetTeam() == TEAM_SPECTATORS)
@@ -986,13 +986,13 @@ void CCharacter::Snap(int SnappingClient)
 		CCharacter* SnapChar = GameServer()->GetPlayerChar(SnappingClient);
 		CPlayer* SnapPlayer = GameServer()->m_apPlayers[SnappingClient];
 
-		if(SnapPlayer->GetTeam() == TEAM_SPECTATORS && SnapPlayer->m_SpectatorID != -1 && !CanCollide(SnapPlayer->m_SpectatorID))
+		if(SnapPlayer->GetTeam() == TEAM_SPECTATORS && SnapPlayer->m_SpectatorID != -1)
 			return;
 
-		if(SnapPlayer->GetTeam() != TEAM_SPECTATORS && SnapChar && !CanCollide(SnappingClient))
+		if(SnapPlayer->GetTeam() != TEAM_SPECTATORS && SnapChar)
 			return;
 
-		if(SnapPlayer->GetTeam() == TEAM_SPECTATORS && SnapPlayer->m_SpectatorID == -1 && !CanCollide(SnappingClient))
+		if(SnapPlayer->GetTeam() == TEAM_SPECTATORS && SnapPlayer->m_SpectatorID == -1)
 			return;
 	}
 
@@ -1227,11 +1227,6 @@ int CCharacter::NetworkClipped(int SnappingClient, vec2 CheckPos)
 	if(distance(GameServer()->m_apPlayers[SnappingClient]->m_ViewPos, CheckPos) > 4000.0f)
 		return 1;
 	return 0;
-}
-
-bool CCharacter::CanCollide(int ClientID)
-{
-	return Teams()->m_Core.CanCollide(GetPlayer()->GetCID(), ClientID);
 }
 
 void CCharacter::HandleSkippableTiles(int Index)

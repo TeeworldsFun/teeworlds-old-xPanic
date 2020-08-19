@@ -155,9 +155,6 @@ private:
 	int m_InvisID;
 
 public:
-	int Team();
-	bool CanCollide(int ClientID);
-	bool SameTeam(int ClientID);
 	bool m_HittingDoor;
 	int m_BurnTick;
 	int m_BurnedFrom;
