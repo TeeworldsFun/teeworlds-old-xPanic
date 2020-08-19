@@ -43,6 +43,7 @@ jobs:
       - name: Build in Release mode
         if: contains(matrix.os, 'windows')
         run: |
+          ls ./bam
           start bam/bam.exe server_release
 
       - name: Build in Release mode
