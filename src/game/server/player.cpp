@@ -76,7 +76,6 @@ void CPlayer::Reset()
 	m_DefEmoteReset = -1;
 
 	m_ClientVersion = VERSION_VANILLA;
-	m_SpecTeam = m_NextPauseTick = 0;
 }
 
 void CPlayer::Tick()

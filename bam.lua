@@ -226,7 +226,7 @@ function build(settings)
 		settings.cc.flags:Add("/wd4244")
 		settings.cc.flags:Add("/EHsc")
 	else
-		settings.cc.flags:Add("-Wall")
+		settings.cc.flags:Add("-w")
 		settings.cc.flags:Add("-fPIC")
 		settings.cc.flags:Add("-fpermissive")
 		if family == "windows" then

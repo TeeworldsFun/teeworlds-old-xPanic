@@ -559,7 +559,7 @@ void CGameContext::OnTick()
 						 (GetPlayerChar(m_VoteCreator) && GetPlayerChar(i) && GetPlayerChar(m_VoteCreator)->Team() != GetPlayerChar(i)->Team())))
 						continue;
 
-					if(m_apPlayers[i]->m_Afk && i != m_VoteCreator)
+					if(i != m_VoteCreator)
 						continue;
 
 					int ActVote = m_apPlayers[i]->m_Vote;
@@ -1205,14 +1205,6 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 			//and give him correct tunings
 			if (Version >= VERSION_DDNET_EXTRATUNES)
 				SendTuningParams(ClientID, pPlayer->m_TuneZone);
-		}
-		else if (MsgID == NETMSGTYPE_CL_SHOWOTHERS)
-		{
-			if(g_Config.m_SvShowOthers && !g_Config.m_SvShowOthersDefault)
-			{
-				CNetMsg_Cl_ShowOthers *pMsg = (CNetMsg_Cl_ShowOthers *)pRawMsg;
-				pPlayer->m_ShowOthers = (bool)pMsg->m_Show;
-			}
 		}
 		else if (MsgID == NETMSGTYPE_CL_SETSPECTATORMODE && !m_World.m_Paused)
 		{
@@ -2381,13 +2373,6 @@ int CGameContext::ProcessSpamProtection(int ClientID)
 		char aBuf[96];
 		str_format(aBuf, sizeof aBuf, "You are not permitted to talk for the next %d seconds.", Muted);
 		SendChatTarget(ClientID, aBuf);
-		return 1;
-	}
-
-	if ((m_apPlayers[ClientID]->m_ChatScore += g_Config.m_SvChatPenalty) > g_Config.m_SvChatThreshold)
-	{
-		Mute(0, &Addr, g_Config.m_SvSpamMuteDuration, Server()->ClientName(ClientID));
-		m_apPlayers[ClientID]->m_ChatScore = 0;
 		return 1;
 	}
 

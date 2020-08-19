@@ -986,10 +986,10 @@ void CCharacter::Snap(int SnappingClient)
 		CCharacter* SnapChar = GameServer()->GetPlayerChar(SnappingClient);
 		CPlayer* SnapPlayer = GameServer()->m_apPlayers[SnappingClient];
 
-		if(SnapPlayer->GetTeam() == TEAM_SPECTATORS && SnapPlayer->m_SpectatorID != -1 && !CanCollide(SnapPlayer->m_SpectatorID) && !SnapPlayer->m_ShowOthers)
+		if(SnapPlayer->GetTeam() == TEAM_SPECTATORS && SnapPlayer->m_SpectatorID != -1 && !CanCollide(SnapPlayer->m_SpectatorID))
 			return;
 
-		if(SnapPlayer->GetTeam() != TEAM_SPECTATORS && SnapChar && !CanCollide(SnappingClient) && !SnapPlayer->m_ShowOthers)
+		if(SnapPlayer->GetTeam() != TEAM_SPECTATORS && SnapChar && !CanCollide(SnappingClient))
 			return;
 
 		if(SnapPlayer->GetTeam() == TEAM_SPECTATORS && SnapPlayer->m_SpectatorID == -1 && !CanCollide(SnappingClient))

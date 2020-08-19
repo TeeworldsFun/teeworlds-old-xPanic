@@ -37,11 +37,6 @@ int64_t CGameTeams::TeamMask(int Team, int ExceptID, int Asker)
 			{ // Actions of other players
 				if (!Character(i))
 					continue; // Player is currently dead
-				if (!GetPlayer(i)->m_ShowOthers)
-				{
-					if (m_Core.Team(i) != Team && m_Core.Team(i) != TEAM_SUPER)
-						continue; // In different teams
-				} // ShowOthers
 			} // See everything of yourself
 		}
 		else if (GetPlayer(i)->m_SpectatorID != SPEC_FREEVIEW)
@@ -50,11 +45,6 @@ int64_t CGameTeams::TeamMask(int Team, int ExceptID, int Asker)
 			{ // Actions of other players
 				if (!Character(GetPlayer(i)->m_SpectatorID))
 					continue; // Player is currently dead
-				if (!GetPlayer(i)->m_ShowOthers)
-				{
-					if (m_Core.Team(GetPlayer(i)->m_SpectatorID) != Team && m_Core.Team(GetPlayer(i)->m_SpectatorID) != TEAM_SUPER)
-						continue; // In different teams
-				} // ShowOthers
 			} // See everything of player you're spectating
 		}
 
