@@ -9,7 +9,6 @@
 #include "gamecontext.h"
 #include <game/gamecore.h>
 #include <game/version.h>
-#include <game/server/teams.h>
 #include "gamemodes/DDRace.h"
 #include "entities/hearth.h"
 #include "entities/cmds.h"
