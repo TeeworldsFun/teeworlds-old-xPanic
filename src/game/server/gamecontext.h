@@ -198,8 +198,6 @@ private:
 	bool m_VoteWillPass;
 	//DDRace Console Commands
 
-	//static void ConMute(IConsole::IResult *pResult, void *pUserData);
-	//static void ConUnmute(IConsole::IResult *pResult, void *pUserData);
 	static void ConKillPlayer(IConsole::IResult *pResult, void *pUserData);
 
 	static void ConShotgun(IConsole::IResult *pResult, void *pUserData);
