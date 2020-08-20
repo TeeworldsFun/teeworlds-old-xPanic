@@ -38,7 +38,7 @@ void CGameContext::ConSetLevel(IConsole::IResult* pResult, void* pUserData)
 	str_format(aBuf, sizeof(aBuf), "Your level was changed to %d!", Level);
 	pSelf->SendChatTarget(ClientID, aBuf);
 
-	pSelf->m_apPlayers[ClientID]->m_AccData.m_Level = clamp(Level, 0, 4000000000);
+	pSelf->m_apPlayers[ClientID]->m_AccData.m_Level = clamp(Level, 0, 2147483647);
 
 	pSelf->m_apPlayers[ClientID]->m_AccData.m_Exp = 0;
 	pSelf->m_apPlayers[ClientID]->m_pAccount->Apply();
@@ -106,7 +106,7 @@ void CGameContext::ConSetTurretLevel(IConsole::IResult* pResult, void* pUserData
 	str_format(aBuf, sizeof(aBuf), "Your turret's level was changed to %d!", Level);
 	pSelf->SendChatTarget(ClientID, aBuf);
 
-	pSelf->m_apPlayers[ClientID]->m_AccData.m_TurretLevel = clamp(Level, 0, 4000000000);
+	pSelf->m_apPlayers[ClientID]->m_AccData.m_TurretLevel = clamp(Level, 0, 2147483647);
 	pSelf->m_apPlayers[ClientID]->m_AccData.m_TurretExp = 0;
 	pSelf->m_apPlayers[ClientID]->m_pAccount->Apply();
 }
@@ -132,7 +132,7 @@ void CGameContext::ConSetMoney(IConsole::IResult* pResult, void* pUserData)
 	str_format(aBuf, sizeof(aBuf), "Your money was changed to %d!", Amount);
 	pSelf->SendChatTarget(ClientID, aBuf);
 
-	pSelf->m_apPlayers[ClientID]->m_AccData.m_Money = clamp(Amount, 0, 4000000000);
+	pSelf->m_apPlayers[ClientID]->m_AccData.m_Money = clamp(Amount, 0, 2147483647);
 	pSelf->m_apPlayers[ClientID]->m_pAccount->Apply();
 }
 
@@ -157,7 +157,7 @@ void CGameContext::ConSetTurretMoney(IConsole::IResult* pResult, void* pUserData
 	str_format(aBuf, sizeof(aBuf), "Your turret's money was changed to %d!", Amount);
 	pSelf->SendChatTarget(ClientID, aBuf);
 
-	pSelf->m_apPlayers[ClientID]->m_AccData.m_TurretMoney = clamp(Amount, 0, 4000000000);
+	pSelf->m_apPlayers[ClientID]->m_AccData.m_TurretMoney = clamp(Amount, 0, 2147483647);
 	pSelf->m_apPlayers[ClientID]->m_pAccount->Apply();
 }
 
