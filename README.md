@@ -1,4 +1,4 @@
-xPanic
+xPanic ![Build](https://github.com/gerdoe-jr/xpanic/workflows/Build/badge.svg)
 ======
 
 Build
