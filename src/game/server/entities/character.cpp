@@ -170,23 +170,18 @@ void CCharacter::SwitchShield()
 
 void CCharacter::SwitchHeartShield(bool Switch)
 {
-	if(Switch)
-		HeartShield = true;
-	else
-		HeartShield = false;
+	HeartShield = Switch;
 }
 
 void CCharacter::SwitchSlowBomb(bool Switch)
 {
-	if(Switch)
-		slowBomb = true;
-	else
-		slowBomb = false;
+	HeartShield = Switch;
 }
 
 void CCharacter::HandleWeaponSwitch()
 {
 	int WantedWeapon = m_Core.m_ActiveWeapon;
+
 	if(m_QueuedWeapon != -1)
 		WantedWeapon = m_QueuedWeapon;
 
@@ -194,6 +189,7 @@ void CCharacter::HandleWeaponSwitch()
 	 for(int i = 0; i < NUM_WEAPONS - 1; ++i)
 		 if(m_aWeapons[i].m_Got)
 			 Anything = true;
+
 	 if(!Anything)
 		 return;
 

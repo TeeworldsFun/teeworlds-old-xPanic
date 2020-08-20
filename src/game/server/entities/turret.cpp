@@ -156,22 +156,21 @@ void CTurret::Fire()
 	switch(m_Type)
 	{
 		case WEAPON_GUN:
-		{
+
 			ExperienceTAdd();
 			new CProjectile(GameWorld(), WEAPON_GUN, m_Owner, ProjStartPos, Direction, (int)(Server()->TickSpeed()*GameServer()->Tuning()->m_GunLifetime), 2+GameServer()->m_apPlayers[m_Owner]->m_AccData.m_TurretDmg/5, 0, 22, -1, WEAPON_GUN);
 			GameServer()->CreateSound(m_Pos, SOUND_GUN_FIRE);
 			m_ReloadTick = 3600 * Server()->TickSpeed() / (1000 + GameServer()->m_apPlayers[m_Owner]->m_AccData.m_TurretSpeed * 30), m_Ammo--;
-		}
-		break;
+			break;
 		case WEAPON_HAMMER:
-		{
 			if (distance(pTarget->m_Pos, m_Pos) > 30 && distance(pTarget->m_Pos, m_Pos) < 300)
 			{
 				SavePosion = pTarget->m_Pos;
 				pTarget->m_Core.m_Vel -= Direction * 1.5;
 				return;
 			}
-			if(distance(pTarget->m_Pos, m_Pos) < 30)
+
+			else if(distance(pTarget->m_Pos, m_Pos) < 30)
 			{
 				GameServer()->CreateHammerHit(pTarget->m_Pos);
 				
@@ -181,29 +180,25 @@ void CTurret::Fire()
 				return;
 			}
 			SavePosion = m_Pos;
-		}
-		break;
+			break;
 
 		case WEAPON_RIFLE:
-		{
 			vec2 Intersection;
 			CCharacter *pTargetChr = GameServer()->m_World.IntersectCharacter(m_Pos1L, m_Pos2L, 1.0f, Intersection, 0x0);
+
 			if (pTargetChr)
-			{
 				if (pTargetChr->GetPlayer()->GetTeam() == TEAM_RED)
 				{
 					new CWall(GameWorld(), m_Pos1L, m_Pos2L, m_Owner, 7, 1);
 					GameServer()->CreateSound(m_Pos, 8);
 					m_ReloadTick = 1800;
 				}
-			}
 			
 			CLifeHearth *pClosest = (CLifeHearth *)GameWorld()->FindFirst(CGameWorld::ENTTYPE_FLAG);
 			for (; pClosest; pClosest = (CLifeHearth *)pClosest->TypeNext())
 			{
 				vec2 IntersectPoss = closest_point_on_line(m_Pos1L, m_Pos2L, pClosest->m_Pos);
 				if (distance(pClosest->m_Pos, IntersectPoss) < 50)
-				{
 					if (GameServer()->GetPlayerChar(pClosest->m_Owner))
 					{
 						if(!g_Config.m_SvDestroyWall)
@@ -228,13 +223,10 @@ void CTurret::Fire()
 						pClosest->Reset();
 						Reset();
 					}
-				}
 			}
-		}
-		break;
+			break;
 
 		case WEAPON_SHOTGUN:
-		{
 			int ShotSpread = 5 + GameServer()->m_apPlayers[m_Owner]->m_AccData.m_TurretLevel / 20;
 
 			CMsgPacker Msg(NETMSGTYPE_SV_EXTRAPROJECTILE);
@@ -258,8 +250,7 @@ void CTurret::Fire()
 			Server()->SendMsg(&Msg, 0, m_Owner);
 			GameServer()->CreateSound(m_Pos, SOUND_SHOTGUN_FIRE);
 			m_ReloadTick = 3800 * Server()->TickSpeed() / (1000 + GameServer()->m_apPlayers[m_Owner]->m_AccData.m_TurretSpeed * 10), m_Ammo--;
-		}
-		break;
+			break;
 	}
 }
 
@@ -294,16 +285,19 @@ void CTurret::Snap(int SnappingClient)
 		if (!pEff)
             continue;
 
-		if(m_ReloadTick && m_Type == WEAPON_HAMMER){
+		if(m_ReloadTick && m_Type == WEAPON_HAMMER)
+		{
 			pEff->m_X = (int)(cos(GetAngle(Direction)+M_PI/9*i*4)*(16.0+m_ReloadTick/65)+m_Pos.x);
 			pEff->m_Y = (int)(sin(GetAngle(Direction)+M_PI/9*i*4)*(16.0+m_ReloadTick/65)+m_Pos.y);
 		}
-		else if(m_ReloadTick && m_Type == WEAPON_RIFLE){
+
+		else if(m_ReloadTick && m_Type == WEAPON_RIFLE)
+		{
 			pEff->m_X = (int)(cos(M_PI/9*i*4)*(16.0+m_ReloadTick/110)+m_Pos.x);
 			pEff->m_Y = (int)(sin(M_PI/9*i*4)*(16.0+m_ReloadTick/110)+m_Pos.y);
 		}
+
 		else
-		{
 			if(m_Ammo < 5)
 			{
 				pEff->m_X = (int)(cos(GetAngle(Direction)+M_PI/9*i*4)*(16.0+m_ReloadTick/20)+m_Pos.x);
@@ -314,59 +308,69 @@ void CTurret::Snap(int SnappingClient)
 				pEff->m_X = (int)(cos(GetAngle(Direction)+M_PI/9*i*4)*16.0+m_Pos.x);
 				pEff->m_Y = (int)(sin(GetAngle(Direction)+M_PI/9*i*4)*16.0+m_Pos.y);
 			}
-		}
 		pEff->m_StartTick = Server()->Tick()-2;
 		pEff->m_Type = WEAPON_SHOTGUN;
     }
+
+	//projcent
+	CNetObj_Projectile* pObj = static_cast<CNetObj_Projectile*>(Server()->SnapNewItem(NETOBJTYPE_PROJECTILE, m_IDS, sizeof(CNetObj_Projectile)));
+	if (!pObj)
+		return;
+
+	pObj->m_X = (int)m_Pos.x;
+	pObj->m_Y = (int)m_Pos.y;
+	pObj->m_StartTick = Server()->Tick() - 3;
+	pObj->m_Type = m_Type;
 	
 	//laserpos1
 	CNetObj_Laser *pObj2 = static_cast<CNetObj_Laser *>(Server()->SnapNewItem(NETOBJTYPE_LASER, m_IDC, sizeof(CNetObj_Laser)));
 	if (!pObj2)
 		return;
 
-	if (m_Type == WEAPON_GRENADE){
-		pObj2->m_X = (int)m_Pos1L.x;
-		pObj2->m_Y = (int)m_Pos1L.y;
+	pObj2->m_X = (int)m_Pos.x;
+	pObj2->m_Y = (int)m_Pos.y;
+
+	pObj2->m_FromX = (int)m_Pos.x + Direction.x * 32;
+	pObj2->m_FromY = (int)m_Pos.y + Direction.y * 32;
+
+	if(pObj2->m_FromX < 1 && pObj2->m_FromY < 1)
+	{
+		pObj2->m_FromX = (int)m_Pos.x;
+		pObj2->m_FromY = (int)m_Pos.y;
 	}
-	else{
-		pObj2->m_X = (int)m_Pos.x;
-		pObj2->m_Y = (int)m_Pos.y;
-	}
-	
-	if (m_Type == WEAPON_HAMMER){
+
+	pObj2->m_StartTick = Server()->Tick();
+
+	switch (m_Type)
+	{
+	case WEAPON_HAMMER:
 		pObj2->m_FromX = (int)SavePosion.x;
 		pObj2->m_FromY = (int)SavePosion.y;
-	}
-	else if (m_Type == WEAPON_GRENADE){
+
+		pObj2->m_StartTick = Server()->Tick() - 5;
+		break;
+	case WEAPON_GUN:
+		break;
+	case WEAPON_SHOTGUN:
+		break;
+	case WEAPON_GRENADE:
+		pObj2->m_X = (int)m_Pos1L.x;
+		pObj2->m_Y = (int)m_Pos1L.y;
+
 		pObj2->m_FromX = (int)m_Pos2L.x;
 		pObj2->m_FromY = (int)m_Pos2L.y;
-	}
-	else if (m_Type == WEAPON_RIFLE){
+
+		pObj2->m_StartTick = Server()->Tick() - 2;
+		break;
+	case WEAPON_RIFLE:
 		Direction = normalize(m_Pos2L - m_Pos);
 		pObj2->m_FromX = (int)m_Pos.x + Direction.x * 32;
 		pObj2->m_FromY = (int)m_Pos.y + Direction.y * 32;
-	}
-	else{
-		pObj2->m_FromX = (int)m_Pos.x + Direction.x * 32;
-		pObj2->m_FromY = (int)m_Pos.y + Direction.y * 32;
+		break;
+	default:
+		break;
 	}
 
-	if (pObj2->m_FromX < 1 && pObj2->m_FromY < 1)
-	{
-		if (m_Type == WEAPON_GRENADE) {
-			pObj2->m_FromX = (int)m_Pos2L.x;
-			pObj2->m_FromY = (int)m_Pos2L.y;
-		}
-		else {
-			pObj2->m_FromX = (int)m_Pos.x;
-			pObj2->m_FromY = (int)m_Pos.y;
-		}
-	}
-	
-	if (m_Type == WEAPON_HAMMER) pObj2->m_StartTick = Server()->Tick() - 5;
-	else if (m_Type == WEAPON_GRENADE) pObj2->m_StartTick = Server()->Tick() - 2;
-	else pObj2->m_StartTick = Server()->Tick();
-	
 	//laserpos2
 	CNetObj_Laser *pObj3 = static_cast<CNetObj_Laser *>(Server()->SnapNewItem(NETOBJTYPE_LASER, m_IDG, sizeof(CNetObj_Laser)));
 	if (!pObj3)
@@ -379,20 +383,13 @@ void CTurret::Snap(int SnappingClient)
 		pObj3->m_Y = (int)m_Pos2L.y;
 		pObj3->m_FromX = (int)m_Pos2L.x;
 		pObj3->m_FromY = (int)m_Pos2L.y;
-		if (pObj3->m_FromX < 1 && pObj3->m_FromY < 1){
+
+		if (pObj3->m_FromX < 1 && pObj3->m_FromY < 1)
+		{
 			pObj3->m_FromX = (int)m_Pos2L.x;
 			pObj3->m_FromY = (int)m_Pos2L.y;
 		}
+
 		pObj3->m_StartTick = Server()->Tick()-2;
 	}
-	
-	//projcent
-	CNetObj_Projectile *pObj = static_cast<CNetObj_Projectile *>(Server()->SnapNewItem(NETOBJTYPE_PROJECTILE, m_IDS, sizeof(CNetObj_Projectile)));
-	if (!pObj)
-		return;
-
-	pObj->m_X = (int)m_Pos.x;
-	pObj->m_Y = (int)m_Pos.y;
-	pObj->m_StartTick = Server()->Tick() - 3;
-	pObj->m_Type = m_Type;
 }
