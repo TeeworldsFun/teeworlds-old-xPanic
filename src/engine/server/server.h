@@ -194,6 +194,9 @@ public:
 	virtual void SetClientScore(int ClientID, int Score);
 
 	void Kick(int ClientID, const char *pReason);
+	void Freeze(int ClientID);
+	void SetScore(int ClientID, int Score);
+	void SetGroup(int ClientID, int GroupID); // 0 - removed, 1 - police, 2 - vip, 3 - helper
 
 	void DemoRecorder_HandleAutoStart();
 	bool DemoRecorder_IsRecording();
@@ -265,6 +268,11 @@ public:
 	static void ConchainMaxclientsperipUpdate(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData);
 	static void ConchainCommandAccessUpdate(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData);
 	static void ConchainConsoleOutputLevelUpdate(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData);
+
+	// xPanic
+	static void ConFreeze(IConsole::IResult *pResult, void *pUser);
+	static void ConSetScore(IConsole::IResult *pResult, void *pUser);
+	static void ConSetGroup(IConsole::IResult *pResult, void *pUser);
 
 	void LogoutByAuthLevel(int AuthLevel);
 

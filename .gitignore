@@ -13,3 +13,4 @@ DDNet-Server.exe
 .bam/00000000
 config.lua
 objs/*
+accounts/*
