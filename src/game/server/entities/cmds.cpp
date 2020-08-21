@@ -439,7 +439,7 @@ void CCmd::ChatCmd(CNetMsg_Cl_Say *Msg)
 			if(m_pPlayer->m_AccData.m_TurretAmmo >= 45)
 				return GameServer()->SendChatTarget(m_pPlayer->GetCID(), "45 ammo level is the maximal :/");
 
-			if(m_pPlayer->m_AccData.m_TurretMoney < kolvo)
+			if(m_pPlayer->m_AccData.m_TurretMoney < kolvo*10)
 			{
 				char aChat[128];
 				if(rand() % 3 + 1 == 3)
