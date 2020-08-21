@@ -37,7 +37,7 @@ jobs:
         run: ./bam/bam server_release
 
       - name: Test Release
-        run: ./DDNet-Server shutdown
+        run: ./xPanic-Server shutdown
 
       - name: Package
         run: |
