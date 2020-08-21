@@ -42,7 +42,7 @@ jobs:
       - name: Package
         run: |
           mkdir artifacts
-          mv DDNet-Server artifacts
+          mv xPanic-Server artifacts
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v1
