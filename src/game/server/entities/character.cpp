@@ -32,7 +32,8 @@ CCharacter::CCharacter(CGameWorld *pWorld)
 	m_pP2Id = Server()->SnapNewID();
 }
 
-void CCharacter::Reset(){
+void CCharacter::Reset()
+{
 	Destroy();
 }
 
@@ -978,16 +979,9 @@ void CCharacter::Snap(int SnappingClient)
 	
 	if(SnappingClient > -1)
 	{
-		CCharacter* SnapChar = GameServer()->GetPlayerChar(SnappingClient);
 		CPlayer* SnapPlayer = GameServer()->m_apPlayers[SnappingClient];
 
-		if(SnapPlayer->GetTeam() == TEAM_SPECTATORS && SnapPlayer->m_SpectatorID != -1)
-			return;
-
-		if(SnapPlayer->GetTeam() != TEAM_SPECTATORS && SnapChar)
-			return;
-
-		if(SnapPlayer->GetTeam() == TEAM_SPECTATORS && SnapPlayer->m_SpectatorID == -1)
+		if(SnapPlayer->GetTeam() == TEAM_SPECTATORS)
 			return;
 	}
 
