@@ -83,6 +83,7 @@ public:
 
 	virtual void DoWincheck();
 	void DoWarmup(int Seconds);
+	bool IsWarmup();
 
 	void StartRound();
 	void EndRound();
