@@ -979,16 +979,8 @@ void CCharacter::Snap(int SnappingClient)
 
 	if(NetworkClipped(SnappingClient))
 		return;
-	
-	if(SnappingClient > -1)
-	{
-		CPlayer* SnapPlayer = GameServer()->m_apPlayers[SnappingClient];
 
-		if(SnapPlayer->GetTeam() == TEAM_SPECTATORS)
-			return;
-	}
-
-	if (GetPlayer()->GetTeam() == TEAM_BLUE && IhammerTick)
+	if (GetPlayer()->GetTeam() == TEAM_BLUE && IhammerTick && GetPlayer()->GetCID() != SnappingClient)
 		return;
 
 	if (armorWall && GetPlayer()->GetTeam() == TEAM_BLUE && m_ShieldTick)
