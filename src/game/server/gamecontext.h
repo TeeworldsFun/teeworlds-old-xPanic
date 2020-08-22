@@ -70,6 +70,7 @@ public:
 	CCollision *Collision() { return &m_Collision; }
 	CTuningParams *Tuning() { return &m_Tuning; }
 	CTuningParams *TuningList() { return &m_TuningList[0]; }
+	IGameController* Controller() { return m_pController; }
 
 	CGameContext();
 	~CGameContext();
@@ -84,6 +85,7 @@ public:
 
 	// helper functions
 	class CCharacter *GetPlayerChar(int ClientID);
+	CPlayer* GetPlayer(int ClientID);
 
 	// voting
 	void StartVote(const char *pDesc, const char *pCommand, const char *pReason);
