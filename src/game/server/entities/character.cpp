@@ -988,7 +988,7 @@ void CCharacter::Snap(int SnappingClient)
 			return;
 	}
 
-	if (GetPlayer()->GetTeam() == TEAM_BLUE && IhammerTick && GetPlayer()->GetCID() != SnappingClient)
+	if (GetPlayer()->GetTeam() == TEAM_BLUE && IhammerTick)
 		return;
 
 	if (armorWall && GetPlayer()->GetTeam() == TEAM_BLUE && m_ShieldTick)
