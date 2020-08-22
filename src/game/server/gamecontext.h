@@ -239,12 +239,17 @@ private:
 
 	// xPanic
 	static void ConSound(IConsole::IResult* pResult, void* pUserData);
+	static void ConFreeze(IConsole::IResult* pResult, void* pUserData);
+	static void ConMoney(IConsole::IResult* pResult, void* pUserData);
+	static void ConGroup(IConsole::IResult* pResult, void* pUserData);
 	static void ConSetLevel(IConsole::IResult* pResult, void* pUserData);
-	static void ConResetAccount(IConsole::IResult* pResult, void* pUserData);
 	static void ConSetTurretLevel(IConsole::IResult* pResult, void* pUserData);
 	static void ConSetMoney(IConsole::IResult* pResult, void* pUserData);
 	static void ConSetTurretMoney(IConsole::IResult* pResult, void* pUserData);
+	static void ConSetGroup(IConsole::IResult* pResult, void* pUserData);
 	static void ConSetScore(IConsole::IResult* pResult, void* pUserData);
+	static void ConResetAccount(IConsole::IResult* pResult, void* pUserData);
+
 
 	enum
 	{
