@@ -202,18 +202,6 @@ private:
 
 	static void ConKillPlayer(IConsole::IResult *pResult, void *pUserData);
 
-	static void ConShotgun(IConsole::IResult *pResult, void *pUserData);
-	static void ConGrenade(IConsole::IResult *pResult, void *pUserData);
-	static void ConRifle(IConsole::IResult *pResult, void *pUserData);
-	static void ConWeapons(IConsole::IResult *pResult, void *pUserData);
-	static void ConUnShotgun(IConsole::IResult *pResult, void *pUserData);
-	static void ConUnGrenade(IConsole::IResult *pResult, void *pUserData);
-	static void ConUnRifle(IConsole::IResult *pResult, void *pUserData);
-	static void ConUnWeapons(IConsole::IResult *pResult, void *pUserData);
-	static void ConAddWeapon(IConsole::IResult *pResult, void *pUserData);
-	static void ConRemoveWeapon(IConsole::IResult *pResult, void *pUserData);
-
-	void ModifyWeapons(IConsole::IResult *pResult, void *pUserData, int Weapon, bool Remove);
 	static void ConGoLeft(IConsole::IResult *pResult, void *pUserData);
 	static void ConGoRight(IConsole::IResult *pResult, void *pUserData);
 	static void ConGoUp(IConsole::IResult *pResult, void *pUserData);
@@ -225,18 +213,12 @@ private:
 	static void ConToCheckTeleporter(IConsole::IResult *pResult, void *pUserData);
 	static void ConTeleport(IConsole::IResult *pResult, void *pUserData);
 
-	static void ConInfo(IConsole::IResult *pResult, void *pUserData);
-	static void ConHelp(IConsole::IResult *pResult, void *pUserData);
-	static void ConRules(IConsole::IResult *pResult, void *pUserData);
-	static void ConKill(IConsole::IResult *pResult, void *pUserData);
-	static void ConToggleSpec(IConsole::IResult *pResult, void *pUserData);
-
 	static void ConMute(IConsole::IResult *pResult, void *pUserData);
 	static void ConMuteID(IConsole::IResult *pResult, void *pUserData);
 	static void ConMuteIP(IConsole::IResult *pResult, void *pUserData);
 	static void ConUnmute(IConsole::IResult *pResult, void *pUserData);
 	static void ConMutes(IConsole::IResult *pResult, void *pUserData);
-
+  
 	static void ConList(IConsole::IResult *pResult, void *pUserData);
 
 	// xPanic
@@ -251,8 +233,7 @@ private:
 	static void ConSetGroup(IConsole::IResult* pResult, void* pUserData);
 	static void ConSetScore(IConsole::IResult* pResult, void* pUserData);
 	static void ConResetAccount(IConsole::IResult* pResult, void* pUserData);
-
-
+  
 	enum
 	{
 		MAX_MUTES=32,

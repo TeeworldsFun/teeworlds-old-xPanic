@@ -403,22 +403,204 @@ void CServer::Kick(int ClientID, const char *pReason)
 {
 	if(ClientID < 0 || ClientID >= MAX_CLIENTS || m_aClients[ClientID].m_State == CClient::STATE_EMPTY)
 	{
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "invalid client id to kick");
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "police", "invalid client id to kick");
 		return;
 	}
 	else if(m_RconClientID == ClientID)
 	{
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "you can't kick yourself");
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "police", "you can't kick yourself");
 		return;
 	}
 	else if(m_aClients[ClientID].m_Authed > m_RconAuthLevel)
 	{
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "kick command denied");
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "police", "kick command denied");
 		return;
 	}
 
 	m_NetServer.Drop(ClientID, pReason);
 }
+
+
+// xPanic
+
+void CServer::Freeze(int ClientID)
+{
+	CGameContext *GameServer = (CGameContext *) m_pGameServer;
+
+	if(ClientID < 0 || ClientID >= MAX_CLIENTS || m_aClients[ClientID].m_State == CClient::STATE_EMPTY)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "police", "invalid client id to freeze");
+		return;
+	}
+
+	else if(!GameServer->m_apPlayers[ClientID]->m_AccData.m_UserID)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "police", "the player are not logged");
+		return;
+	}
+
+	else if(m_aClients[ClientID].m_Authed > m_RconAuthLevel)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "police", "freeze command denied");
+		return;
+	}
+
+	GameServer->m_apPlayers[ClientID]->m_AccData.m_Freeze ^= true;
+	GameServer->m_apPlayers[ClientID]->m_pAccount->Apply();
+
+	char aBuf[64];
+	str_format(aBuf, sizeof(aBuf), "succesfully %s %s", GameServer->m_apPlayers[ClientID]->m_AccData.m_Freeze ? "freezed" : "unfreezed", ClientName(ClientID));
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "police", aBuf);
+}
+
+void CServer::SetScore(int ClientID, int Score)
+{
+	CGameContext *GameServer = (CGameContext *) m_pGameServer;
+
+	if(ClientID < 0 || ClientID >= MAX_CLIENTS || m_aClients[ClientID].m_State == CClient::STATE_EMPTY)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "police", "invalid client id to set score");
+		return;
+	}
+
+	else if(!GameServer->m_apPlayers[ClientID]->m_AccData.m_UserID)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "police", "the player are not logged");
+		return;
+	}
+
+	else if(m_aClients[ClientID].m_Authed > m_RconAuthLevel)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "police", "set score command denied");
+		return;
+	}
+
+	int oldScore = GameServer->m_apPlayers[ClientID]->m_Score;
+	GameServer->m_apPlayers[ClientID]->m_Score = Score;
+
+	char aBuf[64];
+	str_format(aBuf, sizeof(aBuf), "succesfully setted %s's score from %d to %d", ClientName(ClientID), oldScore, GameServer->m_apPlayers[ClientID]->m_Score);
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "police", aBuf);
+}
+
+void CServer::SetGroup(int ClientID, int GroupID)
+{
+	CGameContext *GameServer = (CGameContext *) m_pGameServer;
+
+	if(ClientID < 0 || ClientID >= MAX_CLIENTS || m_aClients[ClientID].m_State == CClient::STATE_EMPTY)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", "invalid client id to set group");
+		return;
+	}
+
+	else if(!GameServer->m_apPlayers[ClientID]->m_AccData.m_UserID)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", "the player are not logged");
+		return;
+	}
+
+	else if(GroupID > 3)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", "this group doesn't exist (0 = null, 1 = police, 2 = vip, 3 = helper)");
+		return;
+	}
+
+	else if(m_aClients[ClientID].m_Authed > m_RconAuthLevel)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", "set group command denied");
+		return;
+	}
+
+	int oldGroup = GameServer->m_apPlayers[ClientID]->m_AccData.m_PlayerState;
+	GameServer->m_apPlayers[ClientID]->m_AccData.m_PlayerState = GroupID;
+	GameServer->m_apPlayers[ClientID]->m_pAccount->Apply();
+
+	char aBuf[64];
+	str_format(aBuf, sizeof(aBuf), "succesfully setted %s's group from %d to %d", ClientName(ClientID), oldGroup, GameServer->m_apPlayers[ClientID]->m_AccData.m_PlayerState);
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", aBuf);
+}
+
+void CServer::SetMoney(int ClientID, int Amount)
+{
+	CGameContext *GameServer = (CGameContext *) m_pGameServer;
+
+	if(ClientID < 0 || ClientID >= MAX_CLIENTS || m_aClients[ClientID].m_State == CClient::STATE_EMPTY)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", "invalid client id to set money");
+		return;
+	}
+
+	else if(!GameServer->m_apPlayers[ClientID]->m_AccData.m_UserID)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", "the player are not logged");
+		return;
+	}
+
+	else if(Amount < 0)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", "invalid money amount");
+		return;
+	}
+
+	else if(m_aClients[ClientID].m_Authed > m_RconAuthLevel)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", "setmoney command denied");
+		return;
+	}
+
+	int oldMoney = GameServer->m_apPlayers[ClientID]->m_AccData.m_Money;
+	GameServer->m_apPlayers[ClientID]->m_AccData.m_Money = Amount;
+	GameServer->m_apPlayers[ClientID]->m_pAccount->Apply();
+
+	char aBuf[64];
+	str_format(aBuf, sizeof(aBuf), "succesfully setted %s's money from %d to %d", ClientName(ClientID), oldMoney, GameServer->m_apPlayers[ClientID]->m_AccData.m_Money);
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", aBuf);
+
+	str_format(aBuf, sizeof(aBuf), "Your money was changed from %d to %d", oldMoney, Amount);
+	GameServer->SendChatTarget(ClientID, aBuf);
+}
+
+void CServer::SetTMoney(int ClientID, int Amount)
+{
+	CGameContext *GameServer = (CGameContext *) m_pGameServer;
+
+	if(ClientID < 0 || ClientID >= MAX_CLIENTS || m_aClients[ClientID].m_State == CClient::STATE_EMPTY)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", "invalid client id to set turret money");
+		return;
+	}
+
+	else if(!GameServer->m_apPlayers[ClientID]->m_AccData.m_UserID)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", "the player are not logged");
+		return;
+	}
+
+	else if(Amount < 0)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", "invalid money amount");
+		return;
+	}
+
+	else if(m_aClients[ClientID].m_Authed > m_RconAuthLevel)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", "settmoney command denied");
+		return;
+	}
+
+	int oldTMoney = GameServer->m_apPlayers[ClientID]->m_AccData.m_TurretMoney;
+	GameServer->m_apPlayers[ClientID]->m_AccData.m_TurretMoney = Amount;
+	GameServer->m_apPlayers[ClientID]->m_pAccount->Apply();
+
+	char aBuf[64];
+	str_format(aBuf, sizeof(aBuf), "succesfully setted %s's turret money from %d to %d", ClientName(ClientID), oldTMoney, GameServer->m_apPlayers[ClientID]->m_AccData.m_TurretMoney);
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "admin", aBuf);
+
+	str_format(aBuf, sizeof(aBuf), "Your turret's money was changed from %d to %d", oldTMoney, Amount);
+	GameServer->SendChatTarget(ClientID, aBuf);
+}
+
+// xPanic end
 
 /*int CServer::Tick()
 {
@@ -1770,6 +1952,36 @@ void CServer::ConKick(IConsole::IResult *pResult, void *pUser)
 		((CServer *)pUser)->Kick(pResult->GetInteger(0), "Kicked by console");
 }
 
+// xPanic begin
+
+void CServer::ConFreeze(IConsole::IResult *pResult, void *pUser)
+{
+	((CServer *)pUser)->Freeze(pResult->GetInteger(0));
+}
+
+void CServer::ConSetScore(IConsole::IResult *pResult, void *pUser)
+{
+	((CServer *)pUser)->SetScore(pResult->GetInteger(0), pResult->GetInteger(1));
+}
+
+void CServer::ConSetGroup(IConsole::IResult *pResult, void *pUser)
+{
+	((CServer *)pUser)->SetGroup(pResult->GetInteger(0), pResult->GetInteger(1));
+}
+
+void CServer::ConSetMoney(IConsole::IResult *pResult, void *pUser)
+{
+	((CServer *)pUser)->SetMoney(pResult->GetInteger(0), pResult->GetInteger(1));
+}
+
+void CServer::ConSetTMoney(IConsole::IResult *pResult, void *pUser)
+{
+	((CServer *)pUser)->SetTMoney(pResult->GetInteger(0), pResult->GetInteger(1));
+}
+
+// xPanic end
+
+
 void CServer::ConStatus(IConsole::IResult *pResult, void *pUser)
 {
 	char aBuf[1024];
@@ -2055,6 +2267,13 @@ void CServer::RegisterCommands()
 	Console()->Chain("sv_rcon_password", ConchainRconPasswordChange, this);
 	Console()->Chain("sv_rcon_mod_password", ConchainRconModPasswordChange, this);
 	Console()->Chain("sv_rcon_helper_password", ConchainRconHelperPasswordChange, this);
+
+	// xPanic
+	Console()->Register("freeze", "i[id]", CFGFLAG_SERVER, ConFreeze, this, "Freeze somebody");
+	Console()->Register("setscore", "i[id] i[amount]", CFGFLAG_SERVER, ConSetScore, this, "Set somebody's score");
+	Console()->Register("setgroup", "i[id] i[group]", CFGFLAG_SERVER, ConSetScore, this, "Set somebody's group (0 = null, 1 = police, 2 = vip, 3 = helper");
+	Console()->Register("setmoney", "i[id] i[amount]", CFGFLAG_SERVER, ConSetMoney, this, "Set somebody's money");
+	Console()->Register("settmoney", "i[id] i[amount]", CFGFLAG_SERVER, ConSetTMoney, this, "Set somebody's turret money");
 
 	// register console commands in sub parts
 	m_ServerBan.InitServerBan(Console(), Storage(), this);

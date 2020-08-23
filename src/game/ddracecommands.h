@@ -18,11 +18,10 @@ CONSOLE_COMMAND("down", "", CFGFLAG_SERVER|CMDFLAG_TEST, ConGoDown, this, "Makes
 CONSOLE_COMMAND("move", "i[x] i[y]", CFGFLAG_SERVER|CMDFLAG_TEST, ConMove, this, "Moves to the tile with x/y-number ii")
 CONSOLE_COMMAND("move_raw", "i[x] i[y]", CFGFLAG_SERVER|CMDFLAG_TEST, ConMoveRaw, this, "Moves to the point with x/y-coordinates ii")
 
-CONSOLE_COMMAND("mute", "", CFGFLAG_SERVER, ConMute, this, "");
-CONSOLE_COMMAND("muteid", "v[id] i[minutes]", CFGFLAG_SERVER, ConMuteID, this, "");
-CONSOLE_COMMAND("muteip", "s[ip] i[minute]", CFGFLAG_SERVER, ConMuteIP, this, "");
-CONSOLE_COMMAND("unmute", "v[id]", CFGFLAG_SERVER, ConUnmute, this, "");
-CONSOLE_COMMAND("mutes", "", CFGFLAG_SERVER, ConMutes, this, "");
+CONSOLE_COMMAND("muteid", "v[id] i[minutes]", CFGFLAG_SERVER, ConMuteID, this, "Mute by id");
+CONSOLE_COMMAND("muteip", "s[ip] i[minute]", CFGFLAG_SERVER, ConMuteIP, this, "Mute by ip");
+CONSOLE_COMMAND("unmute", "v[id]", CFGFLAG_SERVER, ConUnmute, this, "Unmute someone");
+CONSOLE_COMMAND("mutes", "", CFGFLAG_SERVER, ConMutes, this, "List of mutes");
 #undef CONSOLE_COMMAND
 
 #endif

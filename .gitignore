@@ -2,6 +2,13 @@
 # Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/slnx.sqlite-journal
-/.vs/slnx.sqlite
-/.vs
+.vs/*
+bam.exe
+autoexec.cfg
+autoexec_server.log
+Compiling.bat
+DDNet-Server.exe
+.bam/00000000
+config.lua
+objs/*
+accounts/*
