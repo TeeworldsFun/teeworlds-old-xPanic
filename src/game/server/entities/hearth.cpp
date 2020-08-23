@@ -19,12 +19,12 @@ CLifeHearth::CLifeHearth(CGameWorld *pGameWorld, vec2 Pos, int Owner)
 void CLifeHearth::Reset() 
 {	
 	GameServer()->m_World.DestroyEntity(this);
+	Destroy();
 }
 
 void CLifeHearth::Tick()
 {
-	if (!GameServer()->m_apPlayers[m_Owner] || GameServer()->m_apPlayers[m_Owner]->GetTeam() == TEAM_BLUE
-			|| GameServer()->m_apPlayers[m_Owner]->GetTeam() == TEAM_SPECTATORS) 
+	if (!GameServer()->m_apPlayers[m_Owner] || GameServer()->m_apPlayers[m_Owner]->GetTeam() != TEAM_RED) 
 		return Reset();
 
 	if (!GameServer()->GetPlayerChar(m_Owner))
@@ -95,10 +95,10 @@ void CLifeHearth::Tick()
 		if (pTarget && pTarget->GetPlayer())
 			if(pTarget->HeartShield)
 			{
-				GameServer()->CreateExplosion(pTarget->m_Pos+vec2(-30, -30), m_Owner, WEAPON_GRENADE, true, -1, -1);
-				GameServer()->CreateExplosion(pTarget->m_Pos+vec2(30, -30), m_Owner, WEAPON_GRENADE, true, -1, -1);
-				GameServer()->CreateExplosion(pTarget->m_Pos+vec2(-30, 30), m_Owner, WEAPON_GRENADE, true, -1, -1);
-				GameServer()->CreateExplosion(pTarget->m_Pos+vec2(30, 30), m_Owner, WEAPON_GRENADE, true, -1, -1);
+				GameServer()->CreateExplosion(pTarget->m_Pos+vec2(-30, -30), m_Owner, WEAPON_GRENADE, true, -1);
+				GameServer()->CreateExplosion(pTarget->m_Pos+vec2(30, -30), m_Owner, WEAPON_GRENADE, true, -1);
+				GameServer()->CreateExplosion(pTarget->m_Pos+vec2(-30, 30), m_Owner, WEAPON_GRENADE, true, -1);
+				GameServer()->CreateExplosion(pTarget->m_Pos+vec2(30, 30), m_Owner, WEAPON_GRENADE, true, -1);
 				GameServer()->CreateExplosion(pTarget->m_Pos, m_Owner, WEAPON_GRENADE, true, -1, -1);
 				GameServer()->CreateSound(pTarget->m_Pos+vec2(-30, 0), 6);
 				GameServer()->CreateSound(pTarget->m_Pos+vec2(30, 0), 6);
@@ -138,16 +138,20 @@ void CLifeHearth::Snap(int SnappingClient)
 			pP->m_X = int(cos(a) * 32.0 + m_Pos.x);
 			pP->m_Y = int(sin(a) * 32.0 + m_Pos.y);
 		}
+
 		else 
 		{
 			pP->m_X = (int)m_Pos.x;
 			pP->m_Y = (int)m_Pos.y;
 		}
 	}
-	else{
+
+	else
+	{
 		pP->m_X = (int)m_Pos.x;
 		pP->m_Y = (int)m_Pos.y;
 	}
+
 	pP->m_Subtype = 0;
 	pP->m_Type = 0;
 }

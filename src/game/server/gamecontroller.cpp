@@ -285,8 +285,8 @@ const char *IGameController::GetTeamName(int Team)
 {
 	if (IsTeamplay())
 	{
-		if (Team == TEAM_RED) return "zombie team";
-		else if (Team == TEAM_BLUE) return "human team";
+		if (Team == TEAM_RED) return "Zombies";
+		else if (Team == TEAM_BLUE) return "Humans";
 	}
 	return "spectators";
 }
@@ -395,7 +395,12 @@ void IGameController::OnCharacterSpawn(class CCharacter *pChr)
 void IGameController::DoWarmup(int Seconds)
 {
 	if (Seconds < 0) m_Warmup = 0;
-	else m_Warmup = Seconds*Server()->TickSpeed();
+	else m_Warmup = Seconds * Server()->TickSpeed();
+}
+
+bool IGameController::IsWarmup()
+{
+	return Server()->Tick() < m_RoundStartTick + m_Warmup * Server()->TickSpeed();
 }
 
 bool IGameController::IsFriendlyFire(int ClientID1, int ClientID2)

@@ -70,6 +70,7 @@ public:
 	CCollision *Collision() { return &m_Collision; }
 	CTuningParams *Tuning() { return &m_Tuning; }
 	CTuningParams *TuningList() { return &m_TuningList[0]; }
+	IGameController* Controller() { return m_pController; }
 
 	CGameContext();
 	~CGameContext();
@@ -84,8 +85,7 @@ public:
 
 	// helper functions
 	class CCharacter *GetPlayerChar(int ClientID);
-
-	//int m_LockTeams;
+	CPlayer* GetPlayer(int ClientID);
 
 	// voting
 	void StartVote(const char *pDesc, const char *pCommand, const char *pReason);
@@ -123,7 +123,7 @@ public:
 
 	// helper functions
 	void CreateDamageInd(vec2 Pos, float AngleMod, int Amount, int64_t Mask=-1);
-	void CreateExplosion(vec2 Pos, int Owner, int Weapon, bool NoDamage, int ActivatedTeam, int64_t Mask);
+	void CreateExplosion(vec2 Pos, int Owner, int Weapon, bool NoDamage, int ActivatedTeam, int64_t Mask = -1);
 	void DetonateSlowBomb(vec2 Pos);
 	void CreateHammerHit(vec2 Pos, int64_t Mask=-1);
 	void CreatePlayerSpawn(vec2 Pos, int64_t Mask=-1);
@@ -190,7 +190,6 @@ public:
 	// DDRace
 
 	int ProcessSpamProtection(int ClientID);
-	int GetDDRaceTeam(int ClientID);
 	int64 m_LastMapVote;
 	int m_aaExtIDs[MAX_CLIENTS];
 	
@@ -200,6 +199,7 @@ private:
 
 	bool m_VoteWillPass;
 	//DDRace Console Commands
+
 	static void ConKillPlayer(IConsole::IResult *pResult, void *pUserData);
 
 	static void ConGoLeft(IConsole::IResult *pResult, void *pUserData);
@@ -218,11 +218,27 @@ private:
 	static void ConMuteIP(IConsole::IResult *pResult, void *pUserData);
 	static void ConUnmute(IConsole::IResult *pResult, void *pUserData);
 	static void ConMutes(IConsole::IResult *pResult, void *pUserData);
+  
+	static void ConList(IConsole::IResult *pResult, void *pUserData);
 
+	// xPanic
+	static void ConSound(IConsole::IResult* pResult, void* pUserData);
+	static void ConFreeze(IConsole::IResult* pResult, void* pUserData);
+	static void ConMoney(IConsole::IResult* pResult, void* pUserData);
+	static void ConGroup(IConsole::IResult* pResult, void* pUserData);
+	static void ConSetLevel(IConsole::IResult* pResult, void* pUserData);
+	static void ConSetTurretLevel(IConsole::IResult* pResult, void* pUserData);
+	static void ConSetMoney(IConsole::IResult* pResult, void* pUserData);
+	static void ConSetTurretMoney(IConsole::IResult* pResult, void* pUserData);
+	static void ConSetGroup(IConsole::IResult* pResult, void* pUserData);
+	static void ConSetScore(IConsole::IResult* pResult, void* pUserData);
+	static void ConResetAccount(IConsole::IResult* pResult, void* pUserData);
+  
 	enum
 	{
 		MAX_MUTES=32,
 	};
+
 	struct CMute
 	{
 		NETADDR m_Addr;

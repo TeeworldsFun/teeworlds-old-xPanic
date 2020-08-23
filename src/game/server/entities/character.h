@@ -10,8 +10,6 @@
 
 #include <game/gamecore.h>
 
-class CGameTeams;
-
 enum
 {
 	WEAPON_GAME = -3, // team switching etc
@@ -77,6 +75,7 @@ public:
 	bool GiveWeapon(int Weapon, int Ammo);
 
 	void SetEmote(int Emote, int Tick);
+	void SetTurret();
 
 	int MaxHealthPerRound;
 
@@ -86,7 +85,7 @@ public:
 	int NeededFaketuning() { return m_NeededFaketuning;}
 	bool IsAlive() const { return m_Alive; }
 	class CPlayer *GetPlayer() { return m_pPlayer; }
-
+	CGameWorld* World() { return GameWorld(); }
 private:
 	// player controlling this character
 	class CPlayer *m_pPlayer;
@@ -157,11 +156,6 @@ private:
 	int m_InvisID;
 
 public:
-	CGameTeams* Teams();
-	void DestroyChildEntities();
-	int Team();
-	bool CanCollide(int ClientID);
-	bool SameTeam(int ClientID);
 	bool m_HittingDoor;
 	int m_BurnTick;
 	int m_BurnedFrom;
@@ -189,6 +183,9 @@ public:
 	int ITickSecond;
 	int m_mAmmo;
 	bool m_SuperJump;
+
+
+
 	int m_TuneZone;
 	int m_TuneZoneOld;
 	int m_LastMove;

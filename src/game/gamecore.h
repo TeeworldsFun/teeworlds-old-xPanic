@@ -13,8 +13,6 @@
 #include "collision.h"
 #include <engine/shared/protocol.h>
 #include <game/generated/protocol.h>
-
-#include "teamscore.h"
 #include "mapitems.h"
 
 
@@ -211,8 +209,8 @@ public:
 
 	int m_TriggeredEvents;
 
-	void Init(CWorldCore *pWorld, CCollision *pCollision, CTeamsCore* pTeams);
-	void Init(CWorldCore *pWorld, CCollision *pCollision, CTeamsCore* pTeams, std::map<int, std::vector<vec2> > *pTeleOuts);
+	void Init(CWorldCore *pWorld, CCollision *pCollision);
+	void Init(CWorldCore *pWorld, CCollision *pCollision, std::map<int, std::vector<vec2> > *pTeleOuts);
 	void Reset();
 	void Tick(bool UseInput, bool IsClient);
 	void Move();
@@ -235,8 +233,6 @@ public:
 	void ApplyForce(vec2 Force);
 
 private:
-
-	CTeamsCore* m_pTeams;
 	int m_TileIndex;
 	int m_TileFlags;
 	int m_TileFIndex;
