@@ -118,6 +118,7 @@ void CCmd::ChatCmd(CNetMsg_Cl_Say *Msg)
 		{
 			GameServer()->SendChatTarget(m_pPlayer->GetCID(), "/upgr <type> <amount>");
 			GameServer()->SendChatTarget(m_pPlayer->GetCID(), "Types: dmg, hp, handle, ammoregen, ammo, stats");
+			GameServer()->SendChatTarget(m_pPlayer->GetCID(), supgr);
 			return;
 		}
 
