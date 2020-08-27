@@ -273,6 +273,8 @@ public:
 
 	int m_ChatResponseTargetID;
 	int m_ChatPrintCBIndex;
+
+	void ApplyAll();
 };
 
 inline int64_t CmaskAll() { return -1LL; }

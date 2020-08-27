@@ -2088,6 +2088,8 @@ void CGameContext::OnMapChange(char *pNewMapName, int MapNameSize)
 
 	str_copy(pNewMapName, aTemp, MapNameSize);
 	str_copy(m_aDeleteTempfile, aTemp, sizeof(m_aDeleteTempfile));
+
+	ApplyAll();
 }
 
 void CGameContext::OnShutdown()
@@ -2311,4 +2313,11 @@ void CGameContext::ResetTuning()
 	Tuning()->Set("shotgun_speeddiff", 0);
 	Tuning()->Set("shotgun_curvature", 0);
 	SendTuningParams(-1);
+}
+
+void CGameContext::ApplyAll()
+{
+	for (int i = 0; i < MAX_CLIENTS; i++)
+		if (GetPlayer(i) && GetPlayer(i)->m_AccData.m_UserID)
+			GetPlayer(i)->m_pAccount->Apply();
 }
