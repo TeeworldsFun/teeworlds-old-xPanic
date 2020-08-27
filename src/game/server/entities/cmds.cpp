@@ -112,13 +112,14 @@ void CCmd::ChatCmd(CNetMsg_Cl_Say *Msg)
 			return GameServer()->SendChatTarget(m_pPlayer->GetCID(), "You are not logged in! Type '/account' for more information!");
 
 		char supgr[256], andg[64];
-		int kolvo; //  второй аргумент - количество апгрейда, которое хочет игроk
+		int kolvo = 1; //  второй аргумент - количество апгрейда, которое хочет игроk
 
-		if(sscanf(Msg->m_pMessage, "/upgr %s %d", supgr, &kolvo) != 2)
+		sscanf(Msg->m_pMessage, "/upgr %s %d", supgr, &kolvo);
+
+		if(!supgr)
 		{
 			GameServer()->SendChatTarget(m_pPlayer->GetCID(), "/upgr <type> <amount>");
 			GameServer()->SendChatTarget(m_pPlayer->GetCID(), "Types: dmg, hp, handle, ammoregen, ammo, stats");
-			GameServer()->SendChatTarget(m_pPlayer->GetCID(), supgr);
 			return;
 		}
 
@@ -134,7 +135,7 @@ void CCmd::ChatCmd(CNetMsg_Cl_Say *Msg)
 			{
 				char aChat[128];
 				if(rand() % 3 + 1 == 3)
-					str_format(aChat, sizeof(aChat), "Man, are you seriously? Take your unexistance money back. You have just %d money counts! Get more.", m_pPlayer->m_AccData.m_Money);
+					str_format(aChat, sizeof(aChat), "Man, are you seriously? Take your nonexistent money back. You have just %d money counts! Get more.", m_pPlayer->m_AccData.m_Money);
 				else if (rand() % 3 + 1 == 2)
 					str_format(aChat, sizeof(aChat), "Oh... do you really checked your money counts? Very bad. It's %d.", m_pPlayer->m_AccData.m_Money);
 				else
