@@ -123,6 +123,9 @@ void CCmd::ChatCmd(CNetMsg_Cl_Say *Msg)
 			return;
 		}
 
+		if(kolvo < 0)
+			return GameServer()->SendChatTarget(m_pPlayer->GetCID(), "You can't upgrade your thing for negative count.");
+
 		if(!str_comp_nocase(supgr, "handle"))
 		{
 			if(m_pPlayer->m_AccData.m_Handle >= 300)
@@ -345,8 +348,10 @@ void CCmd::ChatCmd(CNetMsg_Cl_Say *Msg)
 			GameServer()->SendChatTarget(m_pPlayer->GetCID(), "Use /tupgr <type> <amount>"); 
 			GameServer()->SendChatTarget(m_pPlayer->GetCID(), "Types: dmg, speed, ammo, ammoregen, range.");
 			return;
-
 		}
+
+		if (kolvo < 0)
+			return GameServer()->SendChatTarget(m_pPlayer->GetCID(), "You can't upgrade your thing for negative count.");
 
 		else if(!str_comp_nocase(supgr, "dmg"))
 		{
