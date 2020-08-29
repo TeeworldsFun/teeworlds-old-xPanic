@@ -93,8 +93,6 @@ public:
 	int IsSolid(int x, int y);
 	int IsThrough(int x, int y);
 	int IsWallJump(int Index);
-	int IsNoLaser(int x, int y);
-	int IsFNoLaser(int x, int y);
 
 	int IsCheckpoint(int Index);
 	int IsFCheckpoint(int Index);
