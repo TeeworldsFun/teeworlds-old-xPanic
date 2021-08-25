@@ -226,7 +226,6 @@ void CTurret::Fire()
 			}
 			break;
 
-		case WEAPON_SHOTGUN:
 			int ShotSpread = 5 + GameServer()->m_apPlayers[m_Owner]->m_AccData.m_TurretLevel / 20;
 
 			CMsgPacker Msg(NETMSGTYPE_SV_EXTRAPROJECTILE);
